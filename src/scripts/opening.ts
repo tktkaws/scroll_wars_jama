@@ -5,9 +5,9 @@ import { sequence } from '../data/story';
 const scrollSettings = {
   // 0より大きく1以下。小さいほど余韻が長く、大きいほど素早く止まります。
   // 例: 0.04 = ゆったり / 0.08 = 現在 / 0.15 = きびきび
-  lerp: 0.08,
+  lerp: 0.04,
   // ホイール・トラックパッドの移動量。0.5 = 半分 / 1 = 標準 / 1.5 = 1.5倍
-  wheelMultiplier: 2,
+  wheelMultiplier: 3,
 };
 
 // All cinematic effects follow the browser's actual scroll position.
