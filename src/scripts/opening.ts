@@ -45,7 +45,7 @@ export function initOpening() {
   let lenis: Lenis | undefined;
   const scenePositions = [0, sequence.titleFadeInEnd, 0.43, 1];
   const sceneNames = ['01 — THE INTRO', '02 — THE TITLE', '03 — THE STORY', '04 — BEYOND'];
-  const sceneDescriptions = ['導入文。スクロールするとタイトル、本文の順に進みます。', 'タイトル。スクロールで奥へ消えていきます。', '本文。スクロールで文字が奥へ流れます。', 'エンディング。最初から旅するボタンでもう一度読めます。'];
+  const sceneDescriptions = ['導入文。スクロールするとタイトル、本文の順に進みます。', 'タイトル。スクロールで奥へ消えていきます。', '本文。スクロールで文字が奥へ流れます。', '宇宙を見下ろすと2つの月と大きな環のある惑星が現れます。最初から旅するボタンでもう一度読めます。'];
 
   function update() {
     frame = 0;
@@ -53,6 +53,8 @@ export function initOpening() {
     progress = clamp(window.scrollY / range);
     const universeOpacity = smoothstep(portion(progress, sequence.titleStart, sequence.titleFadeInEnd));
     root.style.setProperty('--universe-opacity', String(universeOpacity));
+    const cameraPan = smoothstep(portion(progress, sequence.cameraPanStart, sequence.cameraPanEnd));
+    root.style.setProperty('--camera-pan', String(cameraPan));
     const productionOpacity = 1 - smoothstep(portion(progress, sequence.productionHold, sequence.productionEnd));
     productionScene.style.opacity = String(productionOpacity);
     productionScene.style.visibility = productionOpacity > 0 ? 'visible' : 'hidden';
@@ -94,7 +96,7 @@ export function initOpening() {
 
     const activeScene = progress < sequence.titleStart ? 0
       : progress < sequence.crawlStart ? 1
-      : progress < sequence.endingStart ? 2 : 3;
+      : progress < sequence.cameraPanStart ? 2 : 3;
     if (activeScene !== currentScene) {
       currentScene = activeScene;
       sceneLabel.textContent = sceneNames[activeScene];

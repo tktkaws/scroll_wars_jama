@@ -1,10 +1,13 @@
 import * as THREE from 'three';
+import { sequence } from '../data/story';
+import { createPlanets } from './planets';
 
 export function initStarfield(canvas: HTMLCanvasElement) {
   let renderer: THREE.WebGLRenderer;
   try {
     renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: false, powerPreference: 'low-power' });
   } catch {
+    canvas.parentElement?.classList.add('no-webgl');
     return; // The SVG starfield is already rendered underneath.
   }
   renderer.setClearColor(0x000000, 0);
@@ -65,6 +68,7 @@ export function initStarfield(canvas: HTMLCanvasElement) {
   const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
   let available = true;
   let disposed = false;
+  const planets = createPlanets(requestRender, () => canvas.parentElement?.classList.add('no-planet-models'));
 
   // Render only after a change. Nothing keeps moving when the scroll stops.
   function render() {
@@ -72,10 +76,16 @@ export function initStarfield(canvas: HTMLCanvasElement) {
     if (!available || disposed || document.hidden) return;
     const movement = motionQuery.matches || readerMode ? 0 : progress;
     camera.position.z = -movement * 45;
+    const panProgress = Math.max(0, Math.min(1, (movement - sequence.cameraPanStart) / (sequence.cameraPanEnd - sequence.cameraPanStart)));
+    const pan = panProgress * panProgress * (3 - 2 * panProgress);
+    camera.rotation.x = -pan * 0.28;
     stars.rotation.z = movement * 0.018;
     stars.position.y = movement * 12;
     renderer.render(scene, camera);
+    const planetsVisible = planets.render(renderer, pan);
+    canvas.parentElement?.classList.toggle('has-planets', planetsVisible);
     canvas.parentElement?.classList.add('has-webgl');
+    canvas.parentElement?.classList.remove('no-webgl');
   }
   function requestRender() {
     if (!frame && !disposed) frame = window.requestAnimationFrame(render);
@@ -87,6 +97,7 @@ export function initStarfield(canvas: HTMLCanvasElement) {
     material.uniforms.uPixelRatio.value = ratio;
     camera.aspect = window.innerWidth / Math.max(1, window.innerHeight);
     camera.updateProjectionMatrix();
+    planets.resize(camera.aspect);
     requestRender();
   }
   function onProgress(event: Event) {
@@ -98,7 +109,9 @@ export function initStarfield(canvas: HTMLCanvasElement) {
   function onContextLost(event: Event) {
     event.preventDefault();
     available = false;
+    canvas.parentElement?.classList.add('no-webgl');
     canvas.parentElement?.classList.remove('has-webgl');
+    canvas.parentElement?.classList.remove('has-planets');
   }
   function onContextRestored() {
     available = true;
@@ -115,6 +128,7 @@ export function initStarfield(canvas: HTMLCanvasElement) {
     canvas.removeEventListener('webglcontextrestored', onContextRestored);
     geometry.dispose();
     material.dispose();
+    planets.dispose();
     renderer.dispose();
   }
   window.addEventListener('resize', resize, { passive: true });

@@ -18,6 +18,11 @@ const stars = Array.from({ length: 380 }, () => ({
     {stars.map((star) => <circle cx={star.x} cy={star.y} r={star.radius} fill="#e0e8f1" opacity={star.opacity} />)}
   </svg>
   <canvas id="starfield"></canvas>
+  <div class="planet-fallback">
+    <div class="moon moon-near"></div>
+    <div class="moon moon-far"></div>
+    <div class="planet-limb"></div>
+  </div>
   <div class="universe-vignette"></div>
 </div>
 
