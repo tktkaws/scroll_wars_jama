@@ -25,7 +25,8 @@ button { border: 0; background: none; }
 ::selection { background: var(--gold); color: var(--space); }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
-.universe { position: fixed; inset: 0; z-index: 0; overflow: hidden; background: var(--space); pointer-events: none; }
+.universe { position: fixed; inset: 0; z-index: 0; overflow: hidden; background: var(--space); pointer-events: none; opacity: var(--universe-opacity, 0); }
+[data-mode='reader'] .universe { opacity: 0; }
 .starfield-fallback, #starfield { position: absolute; inset: 0; width: 100%; height: 100%; }
 .starfield-fallback { opacity: 0.9; }
 #starfield { opacity: 0; }
@@ -45,13 +46,22 @@ button { border: 0; background: none; }
 .is-enhanced[data-mode='reader'] .journey-progress { display: none; }
 .is-enhanced[data-mode='cinema'] .reader { display: none; }
 .cinema-stage { position: fixed; inset: 0; overflow: hidden; }
+.production-scene { position: absolute; inset: 0; display: grid; place-items: center; padding: 36px 5vw; background: var(--space); }
+.production-credit { display: flex; flex-direction: column; align-items: center; gap: 18px; color: #65bd7b; text-align: center; font-family: Georgia, 'Times New Roman', serif; text-shadow: 0 0 18px rgb(101 189 123 / 25%); }
+.production-credit-a { font-size: clamp(20px, 3vw, 36px); }
+.production-credit-company { font-size: clamp(22px, 5vw, 70px); font-weight: 700; letter-spacing: 0.035em; line-height: 1.15; }
+.production-credit-caption { font-size: clamp(20px, 3vw, 36px); letter-spacing: 0.04em; }
+.production-scene .production-begin { color: #65bd7b; }
+.reader .production-credit { margin-bottom: 70px; }
+.reader .production-credit-company { font-size: clamp(22px, 4vw, 40px); }
 .intro-scene { position: absolute; inset: 0; display: grid; place-items: center; padding: 36px 5vw; }
+.intro-scene { opacity: 0; visibility: hidden; }
 .intro-copy { width: 100%; color: var(--intro-blue); text-align: center; }
 .intro-japanese { font-size: clamp(22px, 3.2vw, 46px); line-height: 1.8; letter-spacing: 0.12em; font-weight: 500; margin: 0; text-wrap: balance; }
-.intro-english { max-width: 900px; margin: 24px auto 0; font-size: clamp(14px, 1.65vw, 26px); line-height: 1.8; letter-spacing: 0.05em; text-wrap: balance; opacity: 0.8; }
 .title-scene { position: absolute; inset: 0; opacity: 0; visibility: hidden; }
 .eyebrow { color: var(--gold); font-size: 10px; letter-spacing: 0.3em; font-weight: 500; }
-.title-projection { width: 100%; height: 100%; display: grid; place-items: center; perspective: 700px; perspective-origin: center; }
+.title-projection { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; perspective: 700px; perspective-origin: center; }
+.title-projection > .opening-title { flex-shrink: 0; }
 .opening-title { width: max-content; font-family: Impact, 'Arial Black', sans-serif; font-size: min(29vw, 48vh); font-weight: 900; line-height: 0.83; letter-spacing: -0.025em; text-align: center; margin: 0; color: transparent; -webkit-text-stroke: clamp(1.5px, 0.25vw, 4px) var(--gold); transform-origin: center; will-change: transform; }
 .opening-title span { display: block; }
 .opening-title span + span { margin-top: 0.08em; letter-spacing: 0.045em; padding-left: 0.045em; }
@@ -99,7 +109,6 @@ button { border: 0; background: none; }
 .reader p { margin: 0 0 30px; }
 .reader .eyebrow { margin-bottom: 14px; }
 .reader-prelude { color: var(--intro-blue); font-size: 17px; letter-spacing: 0.12em; }
-.reader .reader-prelude-english { font-size: 13px; letter-spacing: 0.03em; margin-top: -18px; margin-bottom: 45px; }
 .reader .reader-ending { color: var(--gold); margin-top: 60px; }
 
 @media (max-width: 800px) {
@@ -110,7 +119,6 @@ button { border: 0; background: none; }
 @media (max-width: 500px) {
   .reader-toggle { font-size: 10px; gap: 7px; }
   .intro-japanese { letter-spacing: 0.08em; }
-  .intro-english { max-width: 290px; }
   .begin-button { bottom: 18%; font-size: 8px; gap: 13px; }
   .crawl-text { line-height: 1.85; letter-spacing: 0.02em; }
   .crawl-text h2 { margin-bottom: 42px; font-size: 1.15em; }
@@ -125,7 +133,6 @@ button { border: 0; background: none; }
 }
 @media (max-height: 600px) and (min-width: 501px) {
   .intro-japanese { font-size: clamp(20px, 5vh, 32px); }
-  .intro-english { margin-top: 15px; font-size: 15px; }
   .begin-button { bottom: 12%; }
   .journey-footer { bottom: 18px; }
 }

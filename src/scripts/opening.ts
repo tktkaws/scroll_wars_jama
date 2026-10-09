@@ -18,6 +18,7 @@ const smoothstep = (value: number) => value * value * (3 - 2 * value);
 export function initOpening() {
   const root = document.documentElement;
   const journey = document.querySelector<HTMLElement>('[data-journey]')!;
+  const productionScene = document.querySelector<HTMLElement>('[data-production-scene]')!;
   const introScene = document.querySelector<HTMLElement>('[data-intro-scene]')!;
   const titleScene = document.querySelector<HTMLElement>('[data-title-scene]')!;
   const title = document.querySelector<HTMLElement>('[data-title]')!;
@@ -50,12 +51,19 @@ export function initOpening() {
     frame = 0;
     if (readerMode) return;
     progress = clamp(window.scrollY / range);
-    const introOpacity = 1 - smoothstep(portion(progress, sequence.introHold, sequence.introEnd));
+    const universeOpacity = smoothstep(portion(progress, sequence.titleStart, sequence.titleFadeInEnd));
+    root.style.setProperty('--universe-opacity', String(universeOpacity));
+    const productionOpacity = 1 - smoothstep(portion(progress, sequence.productionHold, sequence.productionEnd));
+    productionScene.style.opacity = String(productionOpacity);
+    productionScene.style.visibility = productionOpacity > 0 ? 'visible' : 'hidden';
+    productionScene.inert = productionOpacity === 0;
+    const introOpacity = smoothstep(portion(progress, sequence.introStart, sequence.introFadeInEnd))
+      * (1 - smoothstep(portion(progress, sequence.introHold, sequence.introEnd)));
     introScene.style.opacity = String(introOpacity);
     introScene.style.visibility = introOpacity > 0 ? 'visible' : 'hidden';
     introScene.inert = introOpacity === 0;
 
-    const titleProgress = portion(progress, sequence.titleHold, sequence.titleEnd);
+    const titleProgress = portion(progress, sequence.titleStart, sequence.titleEnd);
     const titleOpacity = smoothstep(portion(progress, sequence.titleStart, sequence.titleFadeInEnd))
       * (1 - smoothstep(portion(progress, sequence.titleFadeOutStart, sequence.titleEnd)));
     title.style.transform = `translateZ(${-titleProgress * 2800}px)`;
@@ -145,12 +153,9 @@ export function initOpening() {
     const previousMode = root.dataset.mode;
     // A hidden reader-mode crawl still needs its layout measured.
     if (readerMode) root.dataset.mode = 'cinema';
-    // Fit the entire logo to the viewport instead of capping it at a fixed size.
+    // Start with the top and bottom cropped, then recede along the title's Z axis.
     title.style.fontSize = '100px';
-    const titleSize = 100 * Math.min(
-      window.innerWidth * 0.96 / Math.max(1, title.offsetWidth),
-      height * 0.88 / Math.max(1, title.offsetHeight),
-    );
+    const titleSize = 100 * height * 1.4 / Math.max(1, title.offsetHeight);
     title.style.fontSize = `${titleSize}px`;
     crawlHeight = crawl.offsetHeight;
     root.dataset.mode = previousMode ?? 'cinema';
@@ -198,6 +203,7 @@ export function initOpening() {
     button.addEventListener('click', (event) => { event.preventDefault(); goTo(0); });
   });
   document.querySelector('[data-begin]')?.addEventListener('click', () => goTo(scenePositions[1]));
+  document.querySelector('[data-production-begin]')?.addEventListener('click', () => goTo(sequence.introFadeInEnd));
   stops.forEach((stop, index) => stop.addEventListener('click', () => goTo(scenePositions[index])));
   motionQuery.addEventListener('change', (event) => setMode(event.matches));
   window.addEventListener('scroll', requestUpdate, { passive: true });

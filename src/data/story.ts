@@ -4,7 +4,6 @@ export const story = {
   episode: 'EPISODE 001',
   chapter: 'まだ見ぬ世界へ',
   prelude: '遠い昔 はるかかなたの銀河系で…',
-  preludeEnglish: 'A long time ago in a galaxy far, far away....',
   paragraphs: [
     '無数の星が眠る銀河の片隅。忘れ去られた小さな惑星から、ひとつの信号が宇宙へと放たれた。',
     'それは、まだ誰も見たことのない世界への招待状。長い沈黙を破り、古い星図に新たな航路が浮かび上がる。',
@@ -19,15 +18,18 @@ export type OpeningStory = typeof story;
 
 /** Normalized scroll positions shared by the title, crawl and navigation. */
 export const sequence = {
-  introHold: 0.065,
+  productionHold: 0.025,
+  productionEnd: 0.045,
+  introStart: 0.05,
+  introFadeInEnd: 0.065,
+  introHold: 0.09,
   introEnd: 0.13,
   titleStart: 0.15,
   titleFadeInEnd: 0.17,
-  titleHold: 0.20,
   titleFadeOutStart: 0.25,
   titleEnd: 0.32,
-  crawlStart: 0.32,
-  crawlFadeInEnd: 0.35,
+  crawlStart: 0.28,
+  crawlFadeInEnd: 0.30,
   crawlFadeOutStart: 0.88,
   crawlEnd: 0.94,
   endingStart: 0.94,

@@ -1,5 +1,6 @@
 ---
 import type { OpeningStory } from '../data/story';
+import ProductionCredit from './ProductionCredit.astro';
 interface Props { story: OpeningStory }
 const { story } = Astro.props;
 ---
@@ -7,10 +8,16 @@ const { story } = Astro.props;
 <main id="opening">
   <div class="scroll-journey" data-journey>
     <div class="cinema-stage">
-      <section class="intro-scene" data-intro-scene>
+      <section class="production-scene" data-production-scene>
+        <ProductionCredit />
+        <button class="begin-button production-begin" type="button" data-production-begin>
+          <span>SCROLL TO BEGIN</span>
+          <svg width="16" height="22" viewBox="0 0 16 22" fill="none" aria-hidden="true"><path d="M8 1v18M2 13l6 6 6-6" stroke="currentColor" stroke-width="1.2" /></svg>
+        </button>
+      </section>
+      <section class="intro-scene" data-intro-scene inert>
         <div class="intro-copy">
           <p class="intro-japanese">{story.prelude}</p>
-          <p class="intro-english" lang="en">{story.preludeEnglish}</p>
         </div>
         <button class="begin-button" type="button" data-begin>
           <span>SCROLL TO BEGIN</span>
@@ -53,8 +60,8 @@ const { story } = Astro.props;
   </div>
 
   <article class="reader" id="reader" tabindex="-1">
+    <ProductionCredit />
     <p class="reader-prelude">{story.prelude}</p>
-    <p class="reader-prelude reader-prelude-english" lang="en">{story.preludeEnglish}</p>
     <h1>{story.title.join(' ')}</h1>
     <p class="eyebrow">{story.episode} / THE OPENING</p>
     <h2>{story.chapter}</h2>
