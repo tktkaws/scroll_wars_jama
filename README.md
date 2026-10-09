@@ -1,43 +1,57 @@
-# Astro Starter Kit: Minimal
+﻿# Scroll Wars
+
+Astro、three.js、Lenisで作った、スクロールで進める宇宙のオープニング。
+
+## 操作
+
+- 下へスクロールすると、青い導入文、画面に合わせた大きなタイトル、奥へ流れる本文の順に進みます。
+- 上へスクロールすると、同じ位置まで巻き戻ります。
+- マウスホイールやトラックパッドにはLenisの慣性スクロールを使い、文字と星空の演出も追従します。タッチ操作はブラウザー標準の慣性を使います。
+- 「SCROLL TO BEGIN」でタイトルへ進みます。右側の場面ボタンで導入文、タイトル、本文、エンディングへ移動できます。
+- 画面下の「本文を読む」で通常の文章表示へ切り替え、「演出に戻る」で元の進行位置へ戻れます。
+- Tabキーで各ボタンへ移動できます。PageDown、PageUp、矢印キーでもスクロールできます。
+- OSの動きを抑える設定が有効な場合は、最初から通常の文章表示になります。
+- WebGLが使えない場合は静止したSVGの星空を表示します。JavaScriptが無効でも本文を読めます。
+
+## 起動と確認
+
+Node.js 22.12.0以上を使用します。
 
 ```sh
-npm create astro@latest -- --template minimal
+npm install
+npm run dev -- --background
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+ページは http://localhost:4321 で開けます。
 
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+```sh
+npm run astro -- dev status
+npm run astro -- dev logs
+npm run astro -- dev stop
+npm run check
+npm run build
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+型チェック、ビルド、開発サーバーの初回起動は順番に実行してください。Viteの依存関係キャッシュへの同時書き込みを避けるためです。
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+`astro.config.mjs`には、Astro 7開発サーバーの依存ライブラリを事前変換する設定を含めています。サーバー用の変換が完了してからAstroのページ処理を準備することで、初回起動やビルド後にページの参照情報が失われるエラーを防ぎます。Lenisとthree.jsも起動時に事前変換します。
 
-Any static assets, like images, can be placed in the `public/` directory.
+## 文章と演出の変更
 
-## 🧞 Commands
+- `src/data/story.ts`: タイトル、章タイトル、本文、エンディング、各場面のスクロール配分。
+- `src/styles/global.css`: 色、文字サイズ、レスポンシブ表示、文字が奥へ消えるマスク。
+- `src/scripts/opening.ts`: Lenisの設定、スクロールの進行度、文字の移動、表示モード。
+- `src/scripts/starfield.ts`: three.jsの星の数、大きさ、背景の視差。
 
-All commands are run from the root of the project, from a terminal:
+本文の高さを測って、移動距離と必要なスクロール領域を自動調整します。消失点は画面の高さの20%に合わせています。背景の描画はスクロールやサイズ変更などの更新時だけ行います。
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+タイトルは画面の幅96%、高さ88%以内に収まる最大サイズに合わせます。本文の面は幅78%で、遠近法による拡大によって画面下端では幅96%になります。
 
-## 👀 Want to learn more?
+慣性スクロールは`src/scripts/opening.ts`冒頭の`scrollSettings`で調整できます。保存後、ブラウザーを再読み込みしてください。
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+- `lerp: 0.08`: 慣性の余韻。0より大きく1以下で指定します。`0.04`ならゆったり、現在の`0.08`は中間、`0.15`ならきびきび反応します。
+- `wheelMultiplier: 1`: ホイール・トラックパッドの移動量。`0.5`なら半分、`1`は標準、`1.5`なら1.5倍です。余韻の長さは`lerp`で調整します。
+
+場面移動にも同じ`lerp`を使います。タッチ操作はブラウザー標準の慣性を使うため、この設定は適用されません。
+
+サイズ変更や表示モードの切り替えでは移動を止めて位置を合わせます。通常の文章表示とOSの動きを抑える設定では、Lenisを使わずスクロールします。
