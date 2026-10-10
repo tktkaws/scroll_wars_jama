@@ -80,7 +80,7 @@ flowchart TD
     Update --> Progress[0〜1の進行度]
     Progress --> Text[文字の位置・透明度・ナビゲーション]
     Progress --> Event[opening:progress イベント]
-    Event --> Stars[three.jsのカメラと星の位置を更新して描画]
+    Event --> Stars[three.jsのカメラを更新して固定されたシーンを描画]
 ```
 
 ### 進行度を0〜1に正規化する
@@ -122,29 +122,32 @@ window.dispatchEvent(new CustomEvent('opening:progress', {
 
 [story.ts](./src/data/story.ts)の`sequence`で、全体に対する開始・終了位置を指定しています。数値は秒数ではなく、スクロール距離に対する割合です。現在の設定は次のとおりです。
 
-- **0〜4.5%**: 緑色の制作クレジットを表示してから消します。
-- **5〜13%**: 青い導入文が現れ、9%から消え始めます。13〜15%は文字のない短い間です。
-- **15〜17%**: タイトルが現れます（`titleStart`、`titleFadeInEnd`）。
-- **15〜32%**: タイトルは出現と同時に奥へ移動します。25%から透明になり、32%で消えます。
-- **28〜70%**: 本文が画面下から奥へ流れます。65〜70%で消えます。
-- **70〜77%**: カメラが下を向き、2つの月と惑星の縁が現れます。
-- **78〜86%**: ぼかした宇宙シーンを円形に切り抜き、中央へ縮めます。円の外側から惑星のない銀河背景が見えます。
-- **87〜93%**: 前半のプロフィールを順にフェードイン・フェードアウトします。
-- **93〜93.5%**: 星空が消え、黒背景へ切り替わります。
-- **93.5〜99%**: 黒背景の上で、後半のクレジット全体が下から上へ流れます。
-- **99〜100%**: 「最初から旅する」ボタンが現れます。
+- **0〜2%**: 緑色の制作クレジット（Portfolio）を表示してから消します。
+- **2〜4%**: 青い導入文が現れ、3.2%から消え始め、4%で消えます。
+- **4〜約5.52%**: タイトルが現れます（`titleStart`、`titleFadeInEnd`）。
+- **4〜約25.33%**: タイトルは出現と同時に奥へ移動します。20%から透明になり、約25.33%で消えます。
+- **約22.29〜54.29%**: 本文が画面下から奥へ流れます。約50.48〜54.29%で消えます。
+- **約54.29〜64.95%**: カメラが下を向き、固定された月と惑星が視野に入ります。
+- **約66.48〜78.67%**: 宇宙シーンをぼかさず円形に切り抜き、中央へ縮めます。円の外側には、ぼかした惑星のない銀河背景が見えます。円が消えるまでに外側のぼかしも解消します。
+- **約80.19〜89.33%**: 前半のプロフィールを順にフェードイン・フェードアウトします。
+- **約89.33〜90.10%**: 星空が消え、黒背景へ切り替わります。
+- **約90.10〜98.48%**: 黒背景の上で、後半のクレジット全体が下から上へ流れます。
+- **約98.48〜100%**: 右側のナビに代わって、場面名だけのナビを画面中央に表示します。各場面名を押すと、そのシーンへ戻ります。
+
+`story.ts`の`titleStoryScrollScale`は`0.5`で、TITLEとSTORYに必要な実際のスクロール距離を半分にしています。タイトル開始4%を維持し、カメラ移動・トランジション・クレジットのスクロール距離も保つよう、全体の距離と各場面の割合を再計算します。`getCameraProgress()`でカメラの進行度を元の配分に戻し、月や惑星の構図を保ちます。
 
 画面右のボタンの移動先は、`opening.ts`の`scenePositions`です。
 
 ```ts
 const scenePositions = [
-  0, sequence.titleFadeInEnd, 0.43,
+  0, sequence.titleFadeInEnd,
+  sequence.crawlStart + (sequence.crawlEnd - sequence.crawlStart) * 0.35,
   sequence.creditsStart + creditDuration * 0.35,
   sequence.rollingCreditsStart + (sequence.rollingCreditsEnd - sequence.rollingCreditsStart) * 0.2,
 ];
 ```
 
-本文ボタンは43%に移動します。制作クレジットの「SCROLL TO BEGIN」は導入文へ、導入文のボタンはタイトルへ進みます。最後の場面ボタンは、名前のクレジットが見える位置へ移動します。
+本文ボタンは本文区間の35%まで進んだ位置へ移動します。開始・終了位置を変更しても、移動先は本文区間内に収まります。最後の場面ボタンは、後半の上へ流れるクレジットへ移動します。
 
 プロフィールの文章とHTMLは[EndCredits.astro](./src/components/EndCredits.astro)で編集します。`<CreditCard>`ひとつが1画面です。内部に`<p>`、`<h2>`、`<br />`などを自由に書けます。画面を増やすには`<CreditCard>`を複製し、表示順を変えるにはブロックを移動します。`label`は読み上げ用の項目名です。クレジット区間は画面数で等分され、フェードもスクロールに連動します。通常の文章表示も同じHTMLを使うので、変更が両方の表示に反映されます。
 
@@ -159,13 +162,14 @@ const scenePositions = [
 ```ts
 const scrollLength = Math.max(
   window.innerHeight * sequence.scrollScreens,
-  crawlHeight * 3.4,
+  crawlHeight * 3.4 * sequence.scrollDistanceScale,
+  rollingScrollLength,
 );
 journey.style.height = `${scrollLength + window.innerHeight}px`;
 range = scrollLength;
 ```
 
-`scrollScreens`の現在値は`36`です。スクロール距離は最低でも画面高さ36枚分になり、本文や後半のクレジットが長い場合はさらに伸びます。`scroll-journey`にはさらに画面1枚分を足し、ページ末尾での最大スクロール位置が`scrollLength`になるようにしています。
+`scrollScreens`の現在値は`23.625`です。スクロール距離は最低でも画面高さ23.625枚分になり、本文や後半のクレジットが長い場合はさらに伸びます。本文の高さによる距離にも同じ短縮率を適用し、後半のクレジットは表示区間に合わせて必要な距離を計算します。`scroll-journey`にはさらに画面1枚分を足し、ページ末尾での最大スクロール位置が`scrollLength`になるようにしています。
 
 `cinema-stage`は`position: fixed`で画面に固定されています。背後の長い`scroll-journey`がスクロール距離を作り、固定された画面内の文字を進行度に応じて動かす構成です。
 
@@ -173,17 +177,16 @@ range = scrollLength;
 
 ### タイトルを画面いっぱいに合わせる
 
-タイトルはいったん`font-size: 100px`にして、幅と高さを測ります。その寸法に対して、画面幅96%と画面高さ88%に収まる倍率のうち小さい方を採用します。
+タイトルは[Star Jedi](https://www.dafont.com/star-jedi.font)のローカルファイル[Starjedi.ttf](./src/assets/fonts/star-jedi/starjedi/Starjedi.ttf)を使用します。フォント一式と付属ガイドは`src/assets/fonts/star-jedi/`に保存しています。`global.css`の`@font-face`で読み込み、ページの`<head>`で先読みします。標準の文字形は小文字に割り当てられているため、タイトルには`text-transform: lowercase`を指定しています。見た目は大文字です。演出側と通常の文章表示のタイトルに適用し、黄色の輪郭はCSSで描きます。
+
+タイトルはいったん`font-size: 100px`にして高さを測り、画面高さの140%に合わせます。中央に配置し、最初は上下が画面から見切れる大きさにします。フォントの読み込みが完了すると`document.fonts.ready`で寸法を測り直します。
 
 ```ts
-const titleSize = 100 * Math.min(
-  window.innerWidth * 0.96 / Math.max(1, title.offsetWidth),
-  window.innerHeight * 0.88 / Math.max(1, title.offsetHeight),
-);
+const titleSize = 100 * height * 1.4 / Math.max(1, title.offsetHeight);
 title.style.fontSize = `${titleSize}px`;
 ```
 
-タイトルの縦横比によって、幅か高さのいずれかが先に上限に達します。文字の形を保ったまま最大化するため、幅と高さが同時に上限へ達するとは限りません。`story.title`の配列要素は1要素につき1行です。
+タイトルの横幅はフォントと文字数に応じて決まります。`story.title`の配列要素は1要素につき1行です。
 
 CSSの`.title-projection`に`perspective: 700px`を指定し、`update()`でタイトルを`translateZ(0px)`から`translateZ(-2800px)`まで動かします。遠近法で徐々に小さくなることと透明度の変化を組み合わせ、奥へ消える演出を作ります。
 
@@ -298,12 +301,24 @@ Lenisがない場合は`window.scrollTo()`を使います。通常のボタン�
 
 1. 暗い宇宙の背景色。
 2. SVGで描く380個の星。
-3. three.jsで描く星の`canvas`。
+3. three.jsで描く星、2つの月、惑星の`canvas`（画像の読み込み中はHTML画像で補います）。
 4. 画面周辺を暗くする放射状グラデーション。
 
-SVGの星は固定シード`71`の疑似乱数で配置します。HTMLに含まれるため、JavaScriptやWebGLの準備前から星が見えます。WebGLが有効になってもSVGは消さず、星空の基礎として残します。
+SVGの星は固定シード`71`の疑似乱数で配置します。HTMLに含まれるため、JavaScriptやWebGLの準備前から星が見えます。WebGLで描画した後はCSSで非表示にし、コンテキストが失われると再表示します。
 
-`canvas`は最初は透明です。WebGLの描画を行った後に親へ`has-webgl`を付け、CSSで表示します。WebGLの初期化に失敗した場合はSVGだけで表示を続けます。背景全体は`position: fixed`、`pointer-events: none`で、操作ボタンやスクロール入力を妨げません。
+`canvas`は最初は透明です。WebGLの描画を行った後に親へ`has-webgl`を付け、CSSで表示します。WebGLの初期化に失敗した場合はSVGの星とHTMLの天体画像で表示を続けます。背景全体は`position: fixed`、`pointer-events: none`で、操作ボタンやスクロール入力を妨げません。
+
+惑星は[public/mars_01.png](./public/mars_01.png)をテクスチャにして、月と同じthree.jsシーン内の`THREE.Sprite`で表示します。設定は[src/data/planet.ts](./src/data/planet.ts)です。`position.x`は左右、`position.y`は上下、`position.z`は奥行きで、画像中央の地平線を配置の基準にしています。x・yを大きくすると右・上へ移動し、zをより小さい負の値にすると奥へ移動して小さく見えます。`width`は16:9を基準にした宇宙シーン内の画像の幅です。
+
+[src/scripts/planet.ts](./src/scripts/planet.ts)でカメラの移動に合わせて画像を投影します。初期設定は、カメラが下を向ききったときの地平線を画面高さ90%に合わせています。`horizon`は画像上端から地平線までの割合、`skyFade`は上部の空を透明にする範囲です。縦長の画面では`minAspect`で画像の最小幅を保ち、左右を切り取って画面下まで惑星を表示します。テクスチャの読み込み中とWebGLコンテキストの消失中は、同じ座標・大きさのHTML画像を表示します。WebGLを初期化できない場合も同じ投影を使い、星空はSVGで表示します。惑星はクレジット用の宇宙には表示しません。
+
+大小2つの月は[public/moon02.png](./public/moon02.png)をテクスチャにして、星と同じthree.jsシーン内に配置します。設定は[src/data/moons.ts](./src/data/moons.ts)です。`near`が左の月、`far`が中央の月で、`position.x`は左右、`position.y`は上下、`position.z`は奥行きです。x・yを大きくすると右・上へ移動し、zをより小さい負の値にすると奥へ移動して小さく見えます。`diameter`は宇宙シーン内の直径、`brightness`と`saturation`は明るさと彩度です。xは16:9を基準に画面の縦横比で補正し、狭い画面でも左の月を表示します。
+
+[src/scripts/moons.ts](./src/scripts/moons.ts)でカメラに正対する`THREE.Sprite`を作り、カメラの移動に応じて位置と見かけの大きさが変わります。テクスチャの読み込み中やWebGLコンテキストの消失中は、同じ座標を投影したHTML画像を表示します。WebGLを初期化できない場合も同じ投影を使い、星空はSVGで表示します。月はクレジット用の宇宙には表示せず、惑星と月の両方を円形トランジションに含めます。
+
+月と惑星は宇宙シーンの最初から固定座標に置き、カメラの下向き移動に合わせた表示切り替えやフェードは行いません。スクロール中に動くのはカメラだけです。画面上の位置と大きさはカメラから投影した結果なので、視野の外にある天体はカメラが向いたときに見えます。読み込み中も同じ位置のHTML画像を表示します。
+
+カメラの設定は[src/data/camera.ts](./src/data/camera.ts)です。`panAngle`は下を向く角度で、初期設定の`0.65`ラジアンは約37度です。story中は大小の月と惑星の画像全体が画角の下に収まり、カメラが下を向くと画角へ入ります。下を向ききったときの左の月は画面上から70%、中央の月は40%、惑星の地平線は90%を基準に配置しています。
 
 ### three.jsの星の配置
 
@@ -339,14 +354,13 @@ gl_PointSize = clamp(aSize * (500.0 / -viewPosition.z), 1.1, 4.2)
 `opening:progress`イベントから受け取った進行度を使い、次の値を変更します。
 
 ```ts
-camera.position.z = -movement * 45;
-stars.rotation.z = movement * 0.018;
-stars.position.y = movement * 12;
+camera.position.z = -getCameraProgress(movement) * spaceCamera.travel;
+camera.rotation.x = -pan * spaceCamera.panAngle;
 ```
 
-`movement`は通常は`progress`です。カメラを少し前進させ、点群をわずかに回転・移動することで、静止画に奥行きの変化を加えます。通常の文章表示、または動きを抑える設定が有効な場合は`movement = 0`になり、この視差を止めます。
+`movement`は通常は`progress`です。星・月・惑星のシーン内の位置を固定し、カメラの前進と下向きの回転だけで見え方を変えます。`pan`はカメラが下を向く区間の進行度です。通常の文章表示、または動きを抑える設定が有効な場合は`movement = 0`になり、カメラを静止させます。
 
-星は時間で流れ続けたり点滅したりしません。位置は進行度だけで決まり、スクロールを巻き戻すと背景も元に戻ります。
+星はシーン内で静止し、時間で流れ続けたり点滅したりしません。カメラの位置と向きは進行度だけで決まり、スクロールを巻き戻すと背景の見え方も元に戻ります。
 
 ### 再描画とリソース管理
 
@@ -413,7 +427,7 @@ await Promise.all(
 ### 色、文字、遠近感
 
 - [global.css](./src/styles/global.css)の`--space`、`--gold`、`--intro-blue`: 背景色、タイトル・本文の色、導入文の色。
-- `.opening-title`: フォント、輪郭線、行間。画面に合わせる最大寸法は`measure()`の`0.96`と`0.88`。
+- `.opening-title`: フォント、輪郭線、行間。初期の高さは`measure()`の`1.4`で画面高さの140%に合わせます。
 - `.crawl-text`: 本文の文字サイズ、行間、段落間隔。
 - `.crawl-plane`: 本文の面の幅`78vw`と上端`85%`。幅や上端を変更すると画面下端の見かけの幅も変わります。
 - `measure()`の`perspective`、`angle`、`originY`: 遠近感と消失点。
@@ -426,7 +440,7 @@ await Promise.all(
 - [Starfield.astro](./src/components/Starfield.astro)の`length: 380`: SVGの星の数。
 - [starfield.ts](./src/scripts/starfield.ts)の`count`: WebGLの星の数。
 - 頂点シェーダーの`clamp()`とフラグメントシェーダー: 星の大きさ、色、輪郭の柔らかさ。
-- `render()`内の`45`、`0.018`、`12`: スクロールによる背景の動きの強さ。
+- [camera.ts](./src/data/camera.ts)の`travel`、`panAngle`: カメラの前進距離と下向き回転の角度。
 - [global.css](./src/styles/global.css)の`.starfield-fallback`、`.has-webgl #starfield`、`.universe-vignette`: 各層の明るさと周辺の暗がり。
 
 星の数はSVGとWebGLで別々に管理しています。星を暗くしすぎるときは、星自体の明るさだけでなく、canvasの透明度や周辺のグラデーションも確認してください。
