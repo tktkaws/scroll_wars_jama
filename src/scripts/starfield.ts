@@ -1,19 +1,21 @@
 import * as THREE from 'three';
 import { sequence } from '../data/story';
-import { createPlanets } from './planets';
+import { spaceCamera } from '../data/camera';
+import { createSceneMoons } from './moons';
+import { createScenePlanet } from './planet';
 
 export function initStarfield(canvas: HTMLCanvasElement) {
-  let renderer: THREE.WebGLRenderer;
+  let renderer: THREE.WebGLRenderer | undefined;
   try {
     renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: false, powerPreference: 'low-power' });
   } catch {
     canvas.parentElement?.classList.add('no-webgl');
-    return; // The SVG starfield is already rendered underneath.
+    // Keep projecting the fixed scene into HTML images above the SVG stars.
   }
-  renderer.setClearColor(0x000000, 0);
+  renderer?.setClearColor(0x000000, 0);
   const creditsCanvas = document.querySelector<HTMLCanvasElement>('#credits-starfield');
   let creditsRenderer: THREE.WebGLRenderer | undefined;
-  if (creditsCanvas) {
+  if (creditsCanvas && renderer) {
     try {
       creditsRenderer = new THREE.WebGLRenderer({ canvas: creditsCanvas, alpha: true, antialias: false, powerPreference: 'low-power' });
       creditsRenderer.setClearColor(0x000000, 0);
@@ -23,9 +25,10 @@ export function initStarfield(canvas: HTMLCanvasElement) {
   }
 
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(55, 1, 0.1, 2400);
-  const creditsCamera = new THREE.PerspectiveCamera(55, 1, 0.1, 2400);
-  creditsCamera.position.z = -sequence.titleFadeInEnd * 45;
+  const camera = new THREE.PerspectiveCamera(spaceCamera.fov, 1, 0.1, 2400);
+  const creditsCamera = new THREE.PerspectiveCamera(spaceCamera.fov, 1, 0.1, 2400);
+  const titleCameraProgress = sequence.titleFadeInEnd;
+  creditsCamera.position.z = -titleCameraProgress * spaceCamera.travel;
   let creditsNeedsRender = true;
   const count = window.innerWidth < 600 ? 850 : 1800;
   const positions = new Float32Array(count * 3);
@@ -74,38 +77,46 @@ export function initStarfield(canvas: HTMLCanvasElement) {
     `,
   });
   const stars = new THREE.Points(geometry, material);
+  // Keep the entire scene stationary; only the camera moves with the scroll.
+  stars.rotation.z = titleCameraProgress * 0.018;
+  stars.position.y = titleCameraProgress * 12;
   scene.add(stars);
   let frame = 0;
   let progress = 0;
   let readerMode = document.documentElement.dataset.mode === 'reader';
   const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-  let available = true;
+  let available = Boolean(renderer);
   let disposed = false;
-  const planets = createPlanets(requestRender, () => canvas.parentElement?.classList.add('no-planet-models'));
+  const moons = createSceneMoons(scene, canvas.parentElement?.querySelector<HTMLElement>('.moon-scene') ?? null, requestRender);
+  const planet = createScenePlanet(scene, canvas.parentElement?.querySelector<HTMLElement>('.planet-scene') ?? null, requestRender);
 
   // Render only after a change. Nothing keeps moving when the scroll stops.
   function render() {
     frame = 0;
-    if (!available || disposed || document.hidden) return;
+    if (disposed || document.hidden) return;
     const movement = motionQuery.matches || readerMode ? 0 : progress;
-    camera.position.z = -movement * 45;
+    camera.position.z = -movement * spaceCamera.travel;
     const panProgress = Math.max(0, Math.min(1, (movement - sequence.cameraPanStart) / (sequence.cameraPanEnd - sequence.cameraPanStart)));
     const pan = panProgress * panProgress * (3 - 2 * panProgress);
-    camera.rotation.x = -pan * 0.28;
-    stars.rotation.z = movement * 0.018;
-    stars.position.y = movement * 12;
+    camera.rotation.x = -pan * spaceCamera.panAngle;
+    camera.updateMatrixWorld();
+    const moonsVisible = moons.update(camera);
+    const planetVisible = planet.update(camera);
+    if (!available || !renderer) return;
     renderer.render(scene, camera);
     if (creditsRenderer && creditsNeedsRender) {
-      // Reuse the title's stars at a fixed position, with no planetary pass.
-      stars.rotation.z = sequence.titleFadeInEnd * 0.018;
-      stars.position.y = sequence.titleFadeInEnd * 12;
+      // Reuse the title's stars at a fixed position, without moons or planets.
+      moons.group.visible = false;
+      planet.sprite.visible = false;
       creditsRenderer.render(scene, creditsCamera);
+      moons.group.visible = moonsVisible;
+      planet.sprite.visible = planetVisible;
       creditsCanvas?.parentElement?.classList.add('has-credit-webgl');
       creditsNeedsRender = false;
     }
-    const planetsVisible = planets.render(renderer, pan);
-    canvas.parentElement?.classList.toggle('has-planets', planetsVisible);
     canvas.parentElement?.classList.add('has-webgl');
+    canvas.parentElement?.classList.toggle('has-scene-moons', moonsVisible);
+    canvas.parentElement?.classList.toggle('has-scene-planet', planetVisible);
     canvas.parentElement?.classList.remove('no-webgl');
   }
   function requestRender() {
@@ -113,8 +124,8 @@ export function initStarfield(canvas: HTMLCanvasElement) {
   }
   function resize() {
     const ratio = Math.min(window.devicePixelRatio || 1, 1.75);
-    renderer.setPixelRatio(ratio);
-    renderer.setSize(window.innerWidth, window.innerHeight, false);
+    renderer?.setPixelRatio(ratio);
+    renderer?.setSize(window.innerWidth, window.innerHeight, false);
     creditsRenderer?.setPixelRatio(ratio);
     creditsRenderer?.setSize(window.innerWidth, window.innerHeight, false);
     creditsCamera.aspect = window.innerWidth / Math.max(1, window.innerHeight);
@@ -123,7 +134,8 @@ export function initStarfield(canvas: HTMLCanvasElement) {
     material.uniforms.uPixelRatio.value = ratio;
     camera.aspect = window.innerWidth / Math.max(1, window.innerHeight);
     camera.updateProjectionMatrix();
-    planets.resize(camera.aspect);
+    moons.resize(camera.aspect);
+    planet.resize(camera.aspect);
     requestRender();
   }
   function onProgress(event: Event) {
@@ -137,7 +149,8 @@ export function initStarfield(canvas: HTMLCanvasElement) {
     available = false;
     canvas.parentElement?.classList.add('no-webgl');
     canvas.parentElement?.classList.remove('has-webgl');
-    canvas.parentElement?.classList.remove('has-planets');
+    canvas.parentElement?.classList.remove('has-scene-moons');
+    canvas.parentElement?.classList.remove('has-scene-planet');
   }
   function onContextRestored() {
     available = true;
@@ -164,8 +177,9 @@ export function initStarfield(canvas: HTMLCanvasElement) {
     creditsCanvas?.removeEventListener('webglcontextrestored', onCreditsContextRestored);
     geometry.dispose();
     material.dispose();
-    planets.dispose();
-    renderer.dispose();
+    moons.dispose();
+    planet.dispose();
+    renderer?.dispose();
     creditsRenderer?.dispose();
   }
   window.addEventListener('resize', resize, { passive: true });

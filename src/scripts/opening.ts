@@ -66,7 +66,9 @@ export function initOpening() {
     const iris = smoothstep(portion(progress, sequence.irisStart, sequence.irisEnd));
     const radius = Math.hypot(window.innerWidth, window.innerHeight) * 0.55 * (1 - iris);
     root.style.setProperty('--iris-radius', `${radius}px`);
-    root.style.setProperty('--iris-blur', `${iris * 12}px`);
+    // The incoming galaxy is exposed outside the clear, shrinking circle.
+    const outerBlur = progress >= sequence.irisStart && progress < sequence.irisEnd ? (1 - iris) * 12 : 0;
+    root.style.setProperty('--iris-outer-blur', `${outerBlur}px`);
     root.style.setProperty('--galaxy-opacity', String(smoothstep(portion(progress, sequence.irisStart, sequence.irisStart + 0.012))));
     root.style.setProperty('--credit-stars-opacity', String(1 - smoothstep(portion(progress, sequence.creditsEnd, sequence.rollingCreditsStart))));
     universe.style.visibility = iris < 1 ? 'visible' : 'hidden';

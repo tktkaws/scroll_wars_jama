@@ -1,5 +1,7 @@
 ---
 import CreditsGalaxy from './CreditsGalaxy.astro';
+import { moonScene } from '../data/moons';
+import { planetScene } from '../data/planet';
 // Keep a visible base of stars, with WebGL adding depth and parallax on top.
 let seed = 71;
 const random = () => {
@@ -20,10 +22,15 @@ const stars = Array.from({ length: 380 }, () => ({
     {stars.map((star) => <circle cx={star.x} cy={star.y} r={star.radius} fill="#e0e8f1" opacity={star.opacity} />)}
   </svg>
   <canvas id="starfield"></canvas>
-  <div class="planet-fallback">
-    <div class="moon moon-near"></div>
-    <div class="moon moon-far"></div>
-    <div class="planet-limb"></div>
+  <div class="moon-scene">
+    {moonScene.bodies.map((moon) => (
+      <img class={`moon moon-${moon.id}`} src={moonScene.image} width="1873" height="1873" alt="" decoding="async"
+        style={`filter: brightness(${moon.brightness}) saturate(${moon.saturation});`} />
+    ))}
+  </div>
+  <div class="planet-scene">
+    <img class="planet-limb" src={planetScene.image} width={planetScene.imageSize.width} height={planetScene.imageSize.height} alt="" decoding="async"
+      style={`transform: translate(-50%, -${planetScene.horizon * 100}%); mask-image: linear-gradient(to bottom, transparent, #000 ${planetScene.skyFade * 100}%);`} />
   </div>
   <div class="universe-vignette"></div>
 </div>

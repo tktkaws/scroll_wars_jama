@@ -10,4 +10,6 @@ https://science.nasa.gov/3d-resources/
 Models downloaded from NASA on 2026-10-09. Embedded color textures were
 resized to a maximum of 2048 pixels and converted to JPEG for web delivery.
 Ring transparency and the original mesh geometry are preserved.
-The two moons use the Rhea model with different sizes and orientations.
+These models were used for the original planetary reveal. The current scene
+uses `public/mars_01.png` and `public/moon02.png` instead; the models are
+retained as source assets and are not loaded by the page.
