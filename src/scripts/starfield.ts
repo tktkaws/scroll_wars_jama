@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { sequence } from '../data/story';
+import { sequence, getCameraProgress } from '../data/story';
 import { spaceCamera } from '../data/camera';
 import { createSceneMoons } from './moons';
 import { createScenePlanet } from './planet';
@@ -27,7 +27,7 @@ export function initStarfield(canvas: HTMLCanvasElement) {
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(spaceCamera.fov, 1, 0.1, 2400);
   const creditsCamera = new THREE.PerspectiveCamera(spaceCamera.fov, 1, 0.1, 2400);
-  const titleCameraProgress = sequence.titleFadeInEnd;
+  const titleCameraProgress = getCameraProgress(sequence.titleFadeInEnd);
   creditsCamera.position.z = -titleCameraProgress * spaceCamera.travel;
   let creditsNeedsRender = true;
   const count = window.innerWidth < 600 ? 850 : 1800;
@@ -95,7 +95,7 @@ export function initStarfield(canvas: HTMLCanvasElement) {
     frame = 0;
     if (disposed || document.hidden) return;
     const movement = motionQuery.matches || readerMode ? 0 : progress;
-    camera.position.z = -movement * spaceCamera.travel;
+    camera.position.z = -getCameraProgress(movement) * spaceCamera.travel;
     const panProgress = Math.max(0, Math.min(1, (movement - sequence.cameraPanStart) / (sequence.cameraPanEnd - sequence.cameraPanStart)));
     const pan = panProgress * panProgress * (3 - 2 * panProgress);
     camera.rotation.x = -pan * spaceCamera.panAngle;

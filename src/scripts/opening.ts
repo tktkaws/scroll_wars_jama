@@ -51,7 +51,9 @@ export function initOpening() {
   let endingActive = false;
   let lenis: Lenis | undefined;
   const creditDuration = (sequence.creditsEnd - sequence.creditsStart) / Math.max(1, creditCards.length);
-  const scenePositions = [0, sequence.titleFadeInEnd, 0.43, sequence.creditsStart + creditDuration * 0.35,
+  const scenePositions = [0, sequence.titleFadeInEnd,
+    sequence.crawlStart + (sequence.crawlEnd - sequence.crawlStart) * 0.35,
+    sequence.creditsStart + creditDuration * 0.35,
     sequence.rollingCreditsStart + (sequence.rollingCreditsEnd - sequence.rollingCreditsStart) * 0.2];
   const sceneNames = ['01 — INTRO', '02 — TITLE', '03 — STORY', '04 — CREDITS', '05 — ROLL'];
   const sceneDescriptions = ['導入文。スクロールするとタイトル、本文の順に進みます。', 'タイトル。スクロールで奥へ消えていきます。', '本文。スクロールで文字が奥へ流れます。', 'カメラが下を向いた後、円が縮んで星空へ切り替わります。スクロールでプロフィールが順にフェード表示されます。', '後半のエンドクレジット。スクロールに合わせて文字が下から上へ流れます。'];
@@ -223,7 +225,8 @@ export function initOpening() {
     // Longer edited credits receive enough scroll distance to remain readable.
     const rollingTravel = height + rollingCreditsHeight + height * 0.08;
     const rollingScrollLength = rollingTravel * 0.75 / (sequence.rollingCreditsEnd - sequence.rollingCreditsStart);
-    const scrollLength = Math.max(height * sequence.scrollScreens, crawlHeight * 3.4, rollingScrollLength);
+    const scrollLength = Math.max(height * sequence.scrollScreens,
+      crawlHeight * 3.4 * sequence.scrollDistanceScale, rollingScrollLength);
     journey.style.height = `${scrollLength + height}px`;
     range = scrollLength;
     lenis?.resize();
