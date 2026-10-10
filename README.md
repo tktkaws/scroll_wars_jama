@@ -122,21 +122,33 @@ window.dispatchEvent(new CustomEvent('opening:progress', {
 
 [story.ts](./src/data/story.ts)の`sequence`で、全体に対する開始・終了位置を指定しています。数値は秒数ではなく、スクロール距離に対する割合です。現在の設定は次のとおりです。
 
-- **0〜6.5%**: 青い導入文を表示したまま保ちます（`introHold`）。
-- **6.5〜13%**: 導入文が消えます（`introEnd`）。13〜15%は文字のない短い間です。
+- **0〜4.5%**: 緑色の制作クレジットを表示してから消します。
+- **5〜13%**: 青い導入文が現れ、9%から消え始めます。13〜15%は文字のない短い間です。
 - **15〜17%**: タイトルが現れます（`titleStart`、`titleFadeInEnd`）。
-- **17〜20%**: タイトルを大きな状態で保ちます（`titleHold`）。
-- **20〜32%**: タイトルが奥へ移動します。25%から透明になり、32%で消えます（`titleFadeOutStart`、`titleEnd`）。
-- **32〜94%**: 本文が画面下から奥へ流れます（`crawlStart`、`crawlEnd`）。32〜35%で現れ、88〜94%で消えます。
-- **94〜99.5%**: エンディングが現れます。99.5〜100%では表示を保ちます。
+- **15〜32%**: タイトルは出現と同時に奥へ移動します。25%から透明になり、32%で消えます。
+- **28〜70%**: 本文が画面下から奥へ流れます。65〜70%で消えます。
+- **70〜77%**: カメラが下を向き、2つの月と惑星の縁が現れます。
+- **78〜86%**: ぼかした宇宙シーンを円形に切り抜き、中央へ縮めます。円の外側から惑星のない銀河背景が見えます。
+- **87〜93%**: 前半のプロフィールを順にフェードイン・フェードアウトします。
+- **93〜93.5%**: 星空が消え、黒背景へ切り替わります。
+- **93.5〜99%**: 黒背景の上で、後半のクレジット全体が下から上へ流れます。
+- **99〜100%**: 「最初から旅する」ボタンが現れます。
 
 画面右のボタンの移動先は、`opening.ts`の`scenePositions`です。
 
 ```ts
-const scenePositions = [0, sequence.titleFadeInEnd, 0.43, 1];
+const scenePositions = [
+  0, sequence.titleFadeInEnd, 0.43,
+  sequence.creditsStart + creditDuration * 0.35,
+  sequence.rollingCreditsStart + (sequence.rollingCreditsEnd - sequence.rollingCreditsStart) * 0.2,
+];
 ```
 
-本文ボタンは、本文が見えるところまで進めるため43%に移動します。「SCROLL TO BEGIN」はタイトルのフェードが完了する17%へ移動します。場面配分を大きく変える場合は、固定値の`0.43`と、エンディングのフェード完了位置`0.995`も確認してください。
+本文ボタンは43%に移動します。制作クレジットの「SCROLL TO BEGIN」は導入文へ、導入文のボタンはタイトルへ進みます。最後の場面ボタンは、名前のクレジットが見える位置へ移動します。
+
+プロフィールの文章とHTMLは[EndCredits.astro](./src/components/EndCredits.astro)で編集します。`<CreditCard>`ひとつが1画面です。内部に`<p>`、`<h2>`、`<br />`などを自由に書けます。画面を増やすには`<CreditCard>`を複製し、表示順を変えるにはブロックを移動します。`label`は読み上げ用の項目名です。クレジット区間は画面数で等分され、フェードもスクロールに連動します。通常の文章表示も同じHTMLを使うので、変更が両方の表示に反映されます。
+
+後半の上へ流れるクレジットは[RollingCredits.astro](./src/components/RollingCredits.astro)で編集します。`.rolling-credits-text`の内部にHTMLを追加してください。各`.rolling-credit-group`はまとまりごとの余白を作ります。文章の高さを測定し、最後の文字が画面上へ抜けるまで移動させます。前半・後半とも通常の文章表示では静止した全文を読めます。
 
 ## 画面と文章のサイズを測る処理
 
@@ -153,7 +165,7 @@ journey.style.height = `${scrollLength + window.innerHeight}px`;
 range = scrollLength;
 ```
 
-`scrollScreens`の現在値は`12`です。スクロール距離は最低でも画面高さ12枚分になり、本文が長い場合は本文高さの3.4倍まで伸びます。`scroll-journey`にはさらに画面1枚分を足し、ページ末尾での最大スクロール位置が`scrollLength`になるようにしています。
+`scrollScreens`の現在値は`36`です。スクロール距離は最低でも画面高さ36枚分になり、本文や後半のクレジットが長い場合はさらに伸びます。`scroll-journey`にはさらに画面1枚分を足し、ページ末尾での最大スクロール位置が`scrollLength`になるようにしています。
 
 `cinema-stage`は`position: fixed`で画面に固定されています。背後の長い`scroll-journey`がスクロール距離を作り、固定された画面内の文字を進行度に応じて動かす構成です。
 
