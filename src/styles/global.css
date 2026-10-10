@@ -1,3 +1,11 @@
+@font-face {
+  font-family: 'Star Jedi';
+  src: url('../assets/fonts/star-jedi/starjedi/Starjedi.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
 :root {
   color-scheme: dark;
   --space: #000;
@@ -80,9 +88,9 @@ button { border: 0; background: none; }
 .eyebrow { color: var(--gold); font-size: 10px; letter-spacing: 0.3em; font-weight: 500; }
 .title-projection { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; perspective: 700px; perspective-origin: center; }
 .title-projection > .opening-title { flex-shrink: 0; }
-.opening-title { width: max-content; font-family: Impact, 'Arial Black', sans-serif; font-size: min(29vw, 48vh); font-weight: 900; line-height: 0.83; letter-spacing: -0.025em; text-align: center; margin: 0; color: transparent; -webkit-text-stroke: clamp(1.5px, 0.25vw, 4px) var(--gold); transform-origin: center; will-change: transform; }
+.opening-title { width: max-content; font-family: 'Star Jedi', Impact, 'Arial Black', sans-serif; font-size: min(29vw, 48vh); font-weight: 400; text-transform: lowercase; line-height: 0.83; letter-spacing: 0; text-align: center; margin: 0; color: transparent; -webkit-text-stroke: clamp(9px, 1.5vw, 24px) var(--gold); transform-origin: center; will-change: transform; }
 .opening-title span { display: block; }
-.opening-title span + span { margin-top: 0.08em; letter-spacing: 0.045em; padding-left: 0.045em; }
+.opening-title span + span { margin-top: 0.08em; }
 .begin-button { position: absolute; bottom: 15%; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 16px; font-size: 9px; letter-spacing: 0.23em; color: var(--intro-blue); padding: 10px; white-space: nowrap; }
 .begin-button svg { transition: transform 180ms ease; }
 .begin-button:hover svg { transform: translateY(4px); }
@@ -142,7 +150,7 @@ button { border: 0; background: none; }
 .progress-track > div { width: 100%; height: 100%; background: var(--gold); transform: scaleX(0); transform-origin: left; }
 
 .reader { max-width: 680px; margin: 0 auto; padding: 90px 30px 110px; line-height: 2.25; font-size: 17px; color: #c4c0bb; }
-.reader h1 { color: var(--gold); font-family: Impact, 'Arial Black', sans-serif; font-size: clamp(40px, 9vw, 78px); letter-spacing: 0.02em; line-height: 1.1; margin: 20px 0 30px; }
+.reader h1 { color: var(--gold); font-family: 'Star Jedi', Impact, 'Arial Black', sans-serif; font-size: clamp(40px, 9vw, 78px); font-weight: 400; text-transform: lowercase; letter-spacing: 0; line-height: 1.1; margin: 20px 0 30px; }
 .reader h2 { color: var(--gold); font-size: 27px; letter-spacing: 0.1em; font-weight: 600; margin: 65px 0 28px; }
 .reader p { margin: 0 0 30px; }
 .reader .eyebrow { margin-bottom: 14px; }
