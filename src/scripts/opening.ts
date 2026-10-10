@@ -33,9 +33,9 @@ export function initOpening() {
   const readerToggle = document.querySelector<HTMLButtonElement>('[data-reader-toggle]')!;
   const readerLabel = document.querySelector<HTMLElement>('[data-reader-label]')!;
   const progressText = document.querySelector<HTMLElement>('[data-progress]')!;
-  const progressBar = document.querySelector<HTMLElement>('[data-progress-bar]')!;
   const sceneLabel = document.querySelector<HTMLElement>('[data-scene-label]')!;
   const status = document.querySelector<HTMLElement>('[data-status]')!;
+  const chapterNavigation = document.querySelector<HTMLElement>('[data-chapter-navigation]')!;
   const stops = [...document.querySelectorAll<HTMLButtonElement>('[data-chapter]')];
   const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
   let readerMode = motionQuery.matches;
@@ -48,11 +48,12 @@ export function initOpening() {
   let frame = 0;
   let currentScene = -1;
   let currentCredit = -1;
+  let endingActive = false;
   let lenis: Lenis | undefined;
   const creditDuration = (sequence.creditsEnd - sequence.creditsStart) / Math.max(1, creditCards.length);
   const scenePositions = [0, sequence.titleFadeInEnd, 0.43, sequence.creditsStart + creditDuration * 0.35,
     sequence.rollingCreditsStart + (sequence.rollingCreditsEnd - sequence.rollingCreditsStart) * 0.2];
-  const sceneNames = ['01 — THE INTRO', '02 — THE TITLE', '03 — THE STORY', '04 — THE CREDITS', '05 — THE ROLL'];
+  const sceneNames = ['01 — INTRO', '02 — TITLE', '03 — STORY', '04 — CREDITS', '05 — ROLL'];
   const sceneDescriptions = ['導入文。スクロールするとタイトル、本文の順に進みます。', 'タイトル。スクロールで奥へ消えていきます。', '本文。スクロールで文字が奥へ流れます。', 'カメラが下を向いた後、円が縮んで星空へ切り替わります。スクロールでプロフィールが順にフェード表示されます。', '後半のエンドクレジット。スクロールに合わせて文字が下から上へ流れます。'];
 
   function update() {
@@ -126,8 +127,10 @@ export function initOpening() {
     ending.style.transform = `translateY(${(1 - endingProgress) * 18}px)`;
     ending.style.pointerEvents = endingProgress > 0.6 ? 'auto' : 'none';
     ending.inert = endingProgress <= 0.6;
+    const endingVisible = progress >= sequence.endingStart;
+    chapterNavigation.style.visibility = endingVisible ? 'hidden' : 'visible';
+    chapterNavigation.inert = endingVisible;
     progressText.textContent = String(Math.round(progress * 100)).padStart(3, '0');
-    progressBar.style.transform = `scaleX(${progress})`;
 
     const activeScene = progress < sequence.titleStart ? 0
       : progress < sequence.crawlStart ? 1
@@ -137,9 +140,10 @@ export function initOpening() {
       currentScene = activeScene;
       sceneLabel.textContent = sceneNames[activeScene];
       status.textContent = sceneDescriptions[activeScene];
-      stops.forEach((stop, index) => {
-        stop.classList.toggle('is-current', index === activeScene);
-        if (index === activeScene) stop.setAttribute('aria-current', 'step');
+      stops.forEach((stop) => {
+        const isCurrent = Number(stop.dataset.chapter) === activeScene;
+        stop.classList.toggle('is-current', isCurrent);
+        if (isCurrent) stop.setAttribute('aria-current', 'step');
         else stop.removeAttribute('aria-current');
       });
     }
@@ -150,10 +154,16 @@ export function initOpening() {
         // Read the edited HTML itself, including any custom elements or line breaks.
         status.textContent = card.textContent?.replace(/\s+/g, ' ').trim() ?? '';
       } else if (progress >= sequence.rollingCreditsEnd) {
-        status.textContent = 'エンドクレジットが終了しました。最初から旅するボタンでもう一度見られます。';
+        status.textContent = 'エンドクレジットが終了しました。中央の場面名から好きな場面に戻れます。';
       } else {
         status.textContent = sceneDescriptions[currentScene];
       }
+    }
+    if (endingVisible !== endingActive) {
+      endingActive = endingVisible;
+      status.textContent = endingVisible
+        ? 'エンドクレジットが終了しました。中央の場面名から好きな場面に戻れます。'
+        : sceneDescriptions[currentScene];
     }
     window.dispatchEvent(new CustomEvent('opening:progress', { detail: { progress, readerMode } }));
   }
@@ -253,12 +263,7 @@ export function initOpening() {
   }
 
   readerToggle.addEventListener('click', () => setMode(!readerMode, true));
-  document.querySelectorAll<HTMLElement>('[data-restart]').forEach((button) => {
-    button.addEventListener('click', (event) => { event.preventDefault(); goTo(0); });
-  });
-  document.querySelector('[data-begin]')?.addEventListener('click', () => goTo(scenePositions[1]));
-  document.querySelector('[data-production-begin]')?.addEventListener('click', () => goTo(sequence.introFadeInEnd));
-  stops.forEach((stop, index) => stop.addEventListener('click', () => goTo(scenePositions[index])));
+  stops.forEach((stop) => stop.addEventListener('click', () => goTo(scenePositions[Number(stop.dataset.chapter)])));
   motionQuery.addEventListener('change', (event) => setMode(event.matches));
   window.addEventListener('scroll', requestUpdate, { passive: true });
   window.addEventListener('resize', () => measure(), { passive: true });

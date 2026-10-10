@@ -63,12 +63,10 @@ button { border: 0; background: none; }
 .is-enhanced .reader-toggle { display: flex; }
 .reader-toggle:hover { color: var(--gold); }
 
-.scroll-journey, .chapter-navigation, .journey-footer, .progress-track { display: none; }
+.scroll-journey, .chapter-navigation, .journey-footer { display: none; }
 .is-enhanced[data-mode='cinema'] .scroll-journey,
-.is-enhanced[data-mode='cinema'] .chapter-navigation,
-.is-enhanced[data-mode='cinema'] .progress-track { display: flex; }
+.is-enhanced[data-mode='cinema'] .chapter-navigation { display: flex; }
 .is-enhanced .journey-footer { display: flex; }
-.is-enhanced[data-mode='reader'] .footer-caption,
 .is-enhanced[data-mode='reader'] .journey-progress { display: none; }
 .is-enhanced[data-mode='cinema'] .reader { display: none; }
 .cinema-stage { position: fixed; inset: 0; overflow: hidden; }
@@ -77,7 +75,6 @@ button { border: 0; background: none; }
 .production-credit-a { font-size: clamp(20px, 3vw, 36px); }
 .production-credit-company { font-size: clamp(22px, 5vw, 70px); font-weight: 700; letter-spacing: 0.035em; line-height: 1.15; }
 .production-credit-caption { font-size: clamp(20px, 3vw, 36px); letter-spacing: 0.04em; }
-.production-scene .production-begin { color: #65bd7b; }
 .reader .production-credit { margin-bottom: 70px; }
 .reader .production-credit-company { font-size: clamp(22px, 4vw, 40px); }
 .intro-scene { position: absolute; inset: 0; display: grid; place-items: center; padding: 36px 5vw; }
@@ -91,9 +88,6 @@ button { border: 0; background: none; }
 .opening-title { width: max-content; font-family: 'Star Jedi', Impact, 'Arial Black', sans-serif; font-size: min(29vw, 48vh); font-weight: 400; text-transform: lowercase; line-height: 0.83; letter-spacing: 0; text-align: center; margin: 0; color: transparent; -webkit-text-stroke: clamp(9px, 1.5vw, 24px) var(--gold); transform-origin: center; will-change: transform; }
 .opening-title span { display: block; }
 .opening-title span + span { margin-top: 0.08em; }
-.begin-button { position: absolute; bottom: 15%; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 16px; font-size: 9px; letter-spacing: 0.23em; color: var(--intro-blue); padding: 10px; white-space: nowrap; }
-.begin-button svg { transition: transform 180ms ease; }
-.begin-button:hover svg { transform: translateY(4px); }
 
 .crawl-viewport { position: absolute; inset: 0; perspective: var(--crawl-perspective); perspective-origin: 50% var(--crawl-origin); opacity: 0; visibility: hidden; overflow: hidden; mask-image: linear-gradient(to bottom, transparent 22%, #000 43%); }
 /* At the bottom edge, perspective expands this 78vw plane to 96vw. */
@@ -105,8 +99,9 @@ button { border: 0; background: none; }
 .crawl-text p:last-child { margin-bottom: 0; }
 
 .ending-scene { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; visibility: hidden; text-align: center; padding: 30px; }
-.restart-button { display: flex; align-items: center; gap: 12px; margin-top: 36px; padding: 14px 22px; border: 1px solid #55503e; color: var(--gold); font-size: 12px; letter-spacing: 0.1em; }
-.restart-button:hover { background: rgba(246, 201, 82, 0.08); border-color: var(--gold); }
+.ending-navigation { display: flex; flex-direction: column; align-items: stretch; gap: 12px; }
+.ending-stop { min-height: 44px; padding: 12px 24px; color: #8b8577; font-size: 12px; letter-spacing: 0.17em; text-align: left; }
+.ending-stop:hover, .ending-stop:focus-visible, .ending-stop.is-current { color: var(--gold); }
 
 /* End credits share the opening's blue, centered typography. */
 .credits-scene { position: absolute; inset: 0; pointer-events: none; }
@@ -123,7 +118,6 @@ button { border: 0; background: none; }
 .reader-rolling-credits .rolling-credits-text { font-size: inherit; }
 .reader-rolling-credits .rolling-credit-group { margin-top: 40px; }
 .reader-rolling-credits .rolling-credits-text h3 { color: #b5bdc7; font-size: 12px; }
-.ending-scene .restart-button { margin-top: 0; min-height: 44px; }
 .reader-profile { margin-top: 70px; padding-top: 24px; border-top: 1px solid #323138; }
 .reader-credit { margin: 32px 0; }
 .reader-credit .intro-japanese { font-size: inherit; line-height: inherit; letter-spacing: 0.06em; text-align: left; }
@@ -134,20 +128,17 @@ button { border: 0; background: none; }
 .chapter-stop { position: relative; width: 28px; height: 30px; display: flex; align-items: center; justify-content: center; }
 .chapter-stop > span:first-child { width: 5px; height: 5px; border-radius: 50%; background: #53515a; }
 .chapter-stop.is-current > span:first-child { background: var(--gold); box-shadow: 0 0 0 4px rgba(246, 201, 82, 0.12); }
-.chapter-name { position: absolute; right: 36px; font-size: 8px; letter-spacing: 0.17em; color: #8b8577; opacity: 0; transition: opacity 180ms; }
-.chapter-stop:hover .chapter-name, .chapter-stop:focus-visible .chapter-name { opacity: 1; }
+.chapter-stop:hover > span:first-child, .chapter-stop:focus-visible > span:first-child { background: var(--gold); }
+.chapter-name { position: absolute; right: 36px; font-size: 8px; letter-spacing: 0.17em; color: #8b8577; opacity: 0; transition: opacity 180ms; white-space: nowrap; }
+.chapter-stop:hover .chapter-name, .chapter-stop:focus-visible .chapter-name { opacity: 1; color: var(--gold); }
 .chapter-line { height: 39px; width: 1px; background: #323138; }
 .journey-footer { position: fixed; bottom: 31px; left: 46px; right: 46px; z-index: 5; align-items: center; justify-content: space-between; gap: 20px; }
 .footer-actions { display: flex; align-items: center; gap: 28px; }
-.footer-caption { display: flex; align-items: center; gap: 12px; color: #86828a; font-size: 10px; letter-spacing: 0.12em; }
-.tiny-star { color: #a29266; font-size: 13px; }
 .journey-progress { display: flex; align-items: center; gap: 11px; font-size: 9px; letter-spacing: 0.14em; color: #959099; }
 .progress-caption { font-size: 8px; }
 .progress-divider { height: 12px; width: 1px; background: #49434a; margin: 0 8px; }
-.progress-number { font-size: 13px; color: var(--gold); font-variant-numeric: tabular-nums; letter-spacing: 0.03em; }
+.progress-number { font-size: 13px; color: inherit; font-variant-numeric: tabular-nums; letter-spacing: 0.03em; }
 .progress-unit { font-size: 9px; color: #ab9d78; margin-left: -6px; }
-.progress-track { position: fixed; bottom: 0; left: 0; right: 0; height: 2px; z-index: 10; background: #1d1d22; }
-.progress-track > div { width: 100%; height: 100%; background: var(--gold); transform: scaleX(0); transform-origin: left; }
 
 .reader { max-width: 680px; margin: 0 auto; padding: 90px 30px 110px; line-height: 2.25; font-size: 17px; color: #c4c0bb; }
 .reader h1 { color: var(--gold); font-family: 'Star Jedi', Impact, 'Arial Black', sans-serif; font-size: clamp(40px, 9vw, 78px); font-weight: 400; text-transform: lowercase; letter-spacing: 0; line-height: 1.1; margin: 20px 0 30px; }
@@ -159,24 +150,20 @@ button { border: 0; background: none; }
 @media (max-width: 800px) {
   .chapter-navigation { right: 16px; }
   .journey-footer { left: 25px; right: 25px; bottom: 25px; }
-  .footer-caption { display: none; }
 }
 @media (max-width: 500px) {
   .reader-toggle { font-size: 10px; gap: 7px; }
   .intro-japanese { letter-spacing: 0.08em; }
-  .begin-button { bottom: 18%; font-size: 8px; gap: 13px; }
   .crawl-text { line-height: 1.85; letter-spacing: 0.02em; }
   .crawl-text h2 { margin-bottom: 42px; font-size: 1.15em; }
   .chapter-navigation { right: 7px; }
   .chapter-line { height: 28px; }
   .journey-footer { left: 22px; right: 22px; bottom: 25px; }
-  .footer-caption { font-size: 8px; letter-spacing: 0.03em; gap: 7px; }
   .progress-caption, .progress-divider { display: none; }
   .reader { padding: 65px 25px 100px; font-size: 16px; }
 }
 @media (max-height: 600px) and (min-width: 501px) {
   .intro-japanese { font-size: clamp(20px, 5vh, 32px); }
-  .begin-button { bottom: 12%; }
   .journey-footer { bottom: 18px; }
 }
 @media (prefers-reduced-motion: reduce) {
