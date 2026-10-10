@@ -27,6 +27,15 @@ button { border: 0; background: none; }
 
 .universe { position: fixed; inset: 0; z-index: 0; overflow: hidden; background: var(--space); pointer-events: none; opacity: var(--universe-opacity, 0); }
 [data-mode='reader'] .universe { opacity: 0; }
+.universe { filter: blur(var(--iris-blur, 0px)); mask-image: radial-gradient(circle at center, #000 max(0px, calc(var(--iris-radius, 150vmax) - 12px)), transparent var(--iris-radius, 150vmax)); }
+.credits-galaxy { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; opacity: var(--galaxy-opacity, 0); background: #000; }
+.credits-star-layer { position: absolute; inset: 0; opacity: var(--credit-stars-opacity, 1); }
+.credits-galaxy svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.credits-starfield-fallback { opacity: 0.9; transform: scale(1.5); }
+#credits-starfield { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; }
+.has-credit-webgl #credits-starfield { opacity: 0.94; }
+.has-credit-webgl .credits-starfield-fallback { opacity: 0; }
+[data-mode='reader'] .credits-galaxy { display: none; }
 .starfield-fallback, #starfield { position: absolute; inset: 0; width: 100%; height: 100%; }
 .starfield-fallback { opacity: 0.9; }
 .starfield-fallback { transform: translateY(calc(var(--camera-pan, 0) * -20vh)) scale(1.5); }
@@ -89,10 +98,30 @@ button { border: 0; background: none; }
 .crawl-text p:last-child { margin-bottom: 0; }
 
 .ending-scene { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; visibility: hidden; text-align: center; padding: 30px; }
-.ending-scene h2 { color: var(--gold); font-size: clamp(25px, 3.6vw, 48px); font-weight: 500; letter-spacing: 0.13em; margin: 22px 0 12px; }
-.ending-scene > p:not(.eyebrow) { color: #a2a0a2; font-size: 12px; letter-spacing: 0.15em; }
 .restart-button { display: flex; align-items: center; gap: 12px; margin-top: 36px; padding: 14px 22px; border: 1px solid #55503e; color: var(--gold); font-size: 12px; letter-spacing: 0.1em; }
 .restart-button:hover { background: rgba(246, 201, 82, 0.08); border-color: var(--gold); }
+
+/* End credits share the opening's blue, centered typography. */
+.credits-scene { position: absolute; inset: 0; pointer-events: none; }
+.credit-card { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; padding: 36px 7vw; opacity: 0; visibility: hidden; }
+.credit-card .intro-japanese { max-width: 1100px; text-shadow: 0 2px 18px #050609; }
+.credit-card:last-child .intro-japanese { font-size: clamp(20px, 2.8vw, 40px); letter-spacing: 0.06em; }
+.rolling-credits-scene { position: absolute; inset: 0; overflow: hidden; visibility: hidden; mask-image: linear-gradient(to bottom, transparent, #000 12%, #000 85%, transparent); }
+.rolling-credits-scene .rolling-credits-text { position: absolute; top: 0; left: 50%; width: min(86%, 800px); transform: translate(-50%, 100vh); will-change: transform; }
+.rolling-credits-text { text-align: center; color: var(--intro-blue); font-size: clamp(18px, 2.2vw, 30px); line-height: 1.9; letter-spacing: 0.06em; text-wrap: balance; }
+.rolling-credit-group + .rolling-credit-group { margin-top: clamp(60px, 10vh, 110px); }
+.rolling-credits-text h3 { margin: 0 0 24px; color: #b5bdc7; font-size: 12px; font-weight: 500; letter-spacing: 0.25em; }
+.rolling-credits-text h2 { margin: 0 0 20px; color: var(--intro-blue); font-size: clamp(28px, 3.5vw, 46px); font-weight: 500; letter-spacing: 0.12em; }
+.rolling-credits-text p { margin: 8px 0; }
+.reader-rolling-credits .rolling-credits-text { font-size: inherit; }
+.reader-rolling-credits .rolling-credit-group { margin-top: 40px; }
+.reader-rolling-credits .rolling-credits-text h3 { color: #b5bdc7; font-size: 12px; }
+.ending-scene .restart-button { margin-top: 0; min-height: 44px; }
+.reader-profile { margin-top: 70px; padding-top: 24px; border-top: 1px solid #323138; }
+.reader-credit { margin: 32px 0; }
+.reader-credit .intro-japanese { font-size: inherit; line-height: inherit; letter-spacing: 0.06em; text-align: left; }
+.reader-profile h3 { color: var(--intro-blue); font-size: 17px; font-weight: 500; }
+.reader-profile ul { display: flex; flex-wrap: wrap; gap: 8px 24px; padding-left: 24px; }
 
 .chapter-navigation { position: fixed; z-index: 5; right: 42px; top: 50%; transform: translateY(-50%); flex-direction: column; align-items: center; }
 .chapter-stop { position: relative; width: 28px; height: 30px; display: flex; align-items: center; justify-content: center; }
@@ -119,7 +148,6 @@ button { border: 0; background: none; }
 .reader p { margin: 0 0 30px; }
 .reader .eyebrow { margin-bottom: 14px; }
 .reader-prelude { color: var(--intro-blue); font-size: 17px; letter-spacing: 0.12em; }
-.reader .reader-ending { color: var(--gold); margin-top: 60px; }
 
 @media (max-width: 800px) {
   .chapter-navigation { right: 16px; }
@@ -137,8 +165,6 @@ button { border: 0; background: none; }
   .journey-footer { left: 22px; right: 22px; bottom: 25px; }
   .footer-caption { font-size: 8px; letter-spacing: 0.03em; gap: 7px; }
   .progress-caption, .progress-divider { display: none; }
-  .ending-scene .eyebrow { font-size: 8px; letter-spacing: 0.2em; }
-  .ending-scene h2 { font-size: 23px; letter-spacing: 0.04em; }
   .reader { padding: 65px 25px 100px; font-size: 16px; }
 }
 @media (max-height: 600px) and (min-width: 501px) {

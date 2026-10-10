@@ -1,6 +1,8 @@
 ---
 import type { OpeningStory } from '../data/story';
 import ProductionCredit from './ProductionCredit.astro';
+import EndCredits from './EndCredits.astro';
+import RollingCredits from './RollingCredits.astro';
 interface Props { story: OpeningStory }
 const { story } = Astro.props;
 ---
@@ -43,10 +45,9 @@ const { story } = Astro.props;
         </div>
       </div>
 
-      <section class="ending-scene" data-ending inert>
-        <p class="eyebrow">THE JOURNEY HAS JUST BEGUN</p>
-        <h2>{story.ending}</h2>
-        <p>ひとつのスクロールから、どこまでも。</p>
+      <EndCredits />
+      <RollingCredits />
+      <section class="ending-scene" data-ending inert aria-label="エンドクレジットの終了">
         <button class="restart-button" type="button" data-restart>
           <svg width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 6a7 7 0 1 1-1 6M4 2v5h5" stroke="currentColor" stroke-width="1.3" /></svg>
           最初から旅する
@@ -66,7 +67,8 @@ const { story } = Astro.props;
     <p class="eyebrow">{story.episode} / THE OPENING</p>
     <h2>{story.chapter}</h2>
     {story.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
-    <p class="reader-ending">{story.ending}</p>
+    <EndCredits reading />
+    <RollingCredits reading />
   </article>
 
   <nav class="chapter-navigation" aria-label="物語の場面" data-chapter-navigation>
@@ -76,7 +78,9 @@ const { story } = Astro.props;
     <span class="chapter-line"></span>
     <button class="chapter-stop" type="button" data-chapter="2" aria-label="本文へ"><span></span><span class="chapter-name">STORY</span></button>
     <span class="chapter-line"></span>
-    <button class="chapter-stop" type="button" data-chapter="3" aria-label="エンディングへ"><span></span><span class="chapter-name">BEYOND</span></button>
+    <button class="chapter-stop" type="button" data-chapter="3" aria-label="プロフィールのエンドクレジットへ"><span></span><span class="chapter-name">CREDITS</span></button>
+    <span class="chapter-line"></span>
+    <button class="chapter-stop" type="button" data-chapter="4" aria-label="上へ流れるエンドクレジットへ"><span></span><span class="chapter-name">ROLL</span></button>
   </nav>
 
   <footer class="journey-footer" data-footer>

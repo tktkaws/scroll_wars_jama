@@ -11,9 +11,22 @@ export function initStarfield(canvas: HTMLCanvasElement) {
     return; // The SVG starfield is already rendered underneath.
   }
   renderer.setClearColor(0x000000, 0);
+  const creditsCanvas = document.querySelector<HTMLCanvasElement>('#credits-starfield');
+  let creditsRenderer: THREE.WebGLRenderer | undefined;
+  if (creditsCanvas) {
+    try {
+      creditsRenderer = new THREE.WebGLRenderer({ canvas: creditsCanvas, alpha: true, antialias: false, powerPreference: 'low-power' });
+      creditsRenderer.setClearColor(0x000000, 0);
+    } catch {
+      // The matching SVG stars remain visible if a second context is unavailable.
+    }
+  }
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(55, 1, 0.1, 2400);
+  const creditsCamera = new THREE.PerspectiveCamera(55, 1, 0.1, 2400);
+  creditsCamera.position.z = -sequence.titleFadeInEnd * 45;
+  let creditsNeedsRender = true;
   const count = window.innerWidth < 600 ? 850 : 1800;
   const positions = new Float32Array(count * 3);
   const sizes = new Float32Array(count);
@@ -82,6 +95,14 @@ export function initStarfield(canvas: HTMLCanvasElement) {
     stars.rotation.z = movement * 0.018;
     stars.position.y = movement * 12;
     renderer.render(scene, camera);
+    if (creditsRenderer && creditsNeedsRender) {
+      // Reuse the title's stars at a fixed position, with no planetary pass.
+      stars.rotation.z = sequence.titleFadeInEnd * 0.018;
+      stars.position.y = sequence.titleFadeInEnd * 12;
+      creditsRenderer.render(scene, creditsCamera);
+      creditsCanvas?.parentElement?.classList.add('has-credit-webgl');
+      creditsNeedsRender = false;
+    }
     const planetsVisible = planets.render(renderer, pan);
     canvas.parentElement?.classList.toggle('has-planets', planetsVisible);
     canvas.parentElement?.classList.add('has-webgl');
@@ -94,6 +115,11 @@ export function initStarfield(canvas: HTMLCanvasElement) {
     const ratio = Math.min(window.devicePixelRatio || 1, 1.75);
     renderer.setPixelRatio(ratio);
     renderer.setSize(window.innerWidth, window.innerHeight, false);
+    creditsRenderer?.setPixelRatio(ratio);
+    creditsRenderer?.setSize(window.innerWidth, window.innerHeight, false);
+    creditsCamera.aspect = window.innerWidth / Math.max(1, window.innerHeight);
+    creditsCamera.updateProjectionMatrix();
+    creditsNeedsRender = true;
     material.uniforms.uPixelRatio.value = ratio;
     camera.aspect = window.innerWidth / Math.max(1, window.innerHeight);
     camera.updateProjectionMatrix();
@@ -117,6 +143,14 @@ export function initStarfield(canvas: HTMLCanvasElement) {
     available = true;
     resize();
   }
+  function onCreditsContextLost(event: Event) {
+    event.preventDefault();
+    creditsCanvas?.parentElement?.classList.remove('has-credit-webgl');
+  }
+  function onCreditsContextRestored() {
+    creditsNeedsRender = true;
+    requestRender();
+  }
   function dispose() {
     disposed = true;
     window.cancelAnimationFrame(frame);
@@ -126,10 +160,13 @@ export function initStarfield(canvas: HTMLCanvasElement) {
     motionQuery.removeEventListener('change', requestRender);
     canvas.removeEventListener('webglcontextlost', onContextLost);
     canvas.removeEventListener('webglcontextrestored', onContextRestored);
+    creditsCanvas?.removeEventListener('webglcontextlost', onCreditsContextLost);
+    creditsCanvas?.removeEventListener('webglcontextrestored', onCreditsContextRestored);
     geometry.dispose();
     material.dispose();
     planets.dispose();
     renderer.dispose();
+    creditsRenderer?.dispose();
   }
   window.addEventListener('resize', resize, { passive: true });
   window.addEventListener('opening:progress', onProgress);
@@ -137,6 +174,8 @@ export function initStarfield(canvas: HTMLCanvasElement) {
   motionQuery.addEventListener('change', requestRender);
   canvas.addEventListener('webglcontextlost', onContextLost);
   canvas.addEventListener('webglcontextrestored', onContextRestored);
+  creditsCanvas?.addEventListener('webglcontextlost', onCreditsContextLost);
+  creditsCanvas?.addEventListener('webglcontextrestored', onCreditsContextRestored);
   window.addEventListener('pagehide', (event) => { if (!event.persisted) dispose(); }, { once: true });
   resize();
 }

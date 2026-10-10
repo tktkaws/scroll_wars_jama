@@ -1,0 +1,23 @@
+---
+import CreditCard from "./CreditCard.astro";
+interface Props {
+  reading?: boolean;
+}
+const { reading = false } = Astro.props;
+---
+
+<section
+  class:list={reading ? ["reader-profile"] : ["credits-scene"]}
+  aria-label="プロフィールのエンドクレジット"
+>
+  <!-- Each CreditCard is one screen. Edit its HTML, reorder it, or add another. -->
+  <CreditCard label="肩書き" reading={reading}>
+    <p class="intro-japanese">With respect to</p>
+    <p class="intro-japanese">GEORGE LUCAS</p>
+  </CreditCard>
+
+  <CreditCard label="名前" reading={reading}>
+    <p class="intro-japanese">Developed by</p>
+    <p class="intro-japanese">TAKAYUKI TAKAHASHI</p>
+  </CreditCard>
+</section>

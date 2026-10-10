@@ -1,0 +1,39 @@
+---
+interface Props { reading?: boolean }
+const { reading = false } = Astro.props;
+---
+
+<section
+  class:list={reading ? ['reader-profile', 'reader-rolling-credits'] : ['rolling-credits-scene']}
+  data-rolling-credits-scene={reading ? undefined : ''}
+  aria-label="上へ流れるエンドクレジット"
+  aria-hidden={reading ? undefined : 'true'}
+  inert={!reading}
+>
+  <div class="rolling-credits-text" data-rolling-credits={reading ? undefined : ''}>
+    <!-- Edit this HTML freely. All groups scroll upward together in cinema mode. -->
+    <div class="rolling-credit-group">
+      <h3>PROFILE</h3>
+      <h2>高橋孝幸</h2>
+      <p>1986年生まれ</p>
+      <p>東京都在住</p>
+      <p>フロントエンドエンジニア</p>
+    </div>
+
+    <div class="rolling-credit-group">
+      <h3>SKILL</h3>
+      <p>HTML / CSS / JavaScript</p>
+      <p>TypeScript / React / Astro</p>
+    </div>
+
+    <div class="rolling-credit-group">
+      <h3>FUTURE</h3>
+      <p>Webアクセシビリティに興味あり</p>
+    </div>
+
+    <div class="rolling-credit-group">
+      <h3>FAB</h3>
+      <p>お笑い / HIPHOP / カレー</p>
+    </div>
+  </div>
+</section>

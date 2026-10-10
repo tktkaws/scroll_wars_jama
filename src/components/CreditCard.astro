@@ -1,0 +1,17 @@
+---
+interface Props {
+  label: string;
+  reading?: boolean;
+}
+const { label, reading = false } = Astro.props;
+---
+
+<div
+  class:list={reading ? ['reader-credit'] : ['credit-card', 'intro-copy']}
+  data-credit-card={reading ? undefined : ''}
+  data-credit-label={label}
+  aria-hidden={reading ? undefined : 'true'}
+>
+  <span class="sr-only">{label}</span>
+  <slot />
+</div>
