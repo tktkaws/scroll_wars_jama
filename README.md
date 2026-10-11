@@ -302,7 +302,7 @@ Lenisがない場合は`window.scrollTo()`を使います。通常のボタン�
 [Starfield.astro](./src/components/Starfield.astro)の星空は、下から次の順に重なります。
 
 1. 暗い宇宙の背景色。
-2. SVGで描く380個の星。
+2. SVGで描く456個の星。
 3. three.jsで描く星、2つの月、惑星の`canvas`（画像の読み込み中はHTML画像で補います）。
 4. 画面周辺を暗くする放射状グラデーション。
 
@@ -324,7 +324,7 @@ SVGの星は固定シード`71`の疑似乱数で配置します。HTMLに含ま
 
 ### three.jsの星の配置
 
-[starfield.ts](./src/scripts/starfield.ts)では、`THREE.Points`にまとめた点群として星を描きます。初期化時の画面幅が600px未満なら850個、それ以外なら1,800個です。この個数は初期化時に決まり、ウィンドウ幅を変えただけでは再生成しません。
+[starfield.ts](./src/scripts/starfield.ts)では、`THREE.Points`にまとめた点群として星を描きます。初期化時の画面幅が600px未満なら1,020個、それ以外なら2,160個です。この個数は初期化時に決まり、ウィンドウ幅を変えただけでは再生成しません。
 
 固定シード`1204`の疑似乱数で、次の範囲に座標と見た目を設定します。
 
@@ -439,7 +439,7 @@ await Promise.all(
 
 ### 星空
 
-- [Starfield.astro](./src/components/Starfield.astro)の`length: 380`: SVGの星の数。
+- [Starfield.astro](./src/components/Starfield.astro)の`length: 456`: SVGの星の数。
 - [starfield.ts](./src/scripts/starfield.ts)の`count`: WebGLの星の数。
 - 頂点シェーダーの`clamp()`とフラグメントシェーダー: 星の大きさ、色、輪郭の柔らかさ。
 - [camera.ts](./src/data/camera.ts)の`travel`、`panAngle`: カメラの前進距離と下向き回転の角度。

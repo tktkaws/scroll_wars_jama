@@ -30,7 +30,7 @@ export function initStarfield(canvas: HTMLCanvasElement) {
   const titleCameraProgress = getCameraProgress(sequence.titleFadeInEnd);
   creditsCamera.position.z = -titleCameraProgress * spaceCamera.travel;
   let creditsNeedsRender = true;
-  const count = window.innerWidth < 600 ? 850 : 1800;
+  const count = window.innerWidth < 600 ? 1020 : 2160;
   const positions = new Float32Array(count * 3);
   const sizes = new Float32Array(count);
   const brightness = new Float32Array(count);
