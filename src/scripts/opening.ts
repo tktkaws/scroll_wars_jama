@@ -287,5 +287,6 @@ export function initOpening() {
   root.classList.remove('is-enhanced');
   setMode(readerMode);
   document.fonts.ready.then(() => measure());
+  document.fonts.addEventListener('loadingdone', () => measure());
   update();
 }

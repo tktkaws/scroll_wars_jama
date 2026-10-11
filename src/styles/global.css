@@ -120,7 +120,7 @@ button { border: 0; background: none; }
 .strength-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .skill-card { min-width: 0; display: flex; flex-direction: column; gap: 12px; padding: 20px 18px; border-radius: 8px; background: rgb(101 214 238 / 4%); line-height: 1.85; letter-spacing: 0.02em; text-align: left; text-wrap: pretty; overflow-wrap: anywhere; }
 .skill-card h4 { margin: 0; line-height: 1.4; font-weight: 700; }
-.rolling-credits-text .skill-card p, .rolling-credits-text .skill-card ul { margin: 0; font-size: clamp(14px, 1.2vw, 16px); }
+.rolling-credits-text .skill-card p, .rolling-credits-text .skill-card ul { margin: 0; font-family: 'Gen Interface JP', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', Meiryo, sans-serif; font-size: clamp(14px, 1.2vw, 16px); }
 .rolling-credits-text .skill-card ul { display: block; padding-left: 1.2em; }
 .skill-card li + li { margin-top: 6px; }
 .skill-card a { text-decoration: underline; text-underline-offset: 3px; }

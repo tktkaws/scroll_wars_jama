@@ -153,6 +153,8 @@ const scenePositions = [
 
 後半の上へ流れるクレジットは[RollingCredits.astro](./src/components/RollingCredits.astro)で編集します。`.rolling-credits-text`の内部にHTMLを追加してください。各`.rolling-credit-group`はまとまりごとの余白を作ります。文章の高さを測定し、最後の文字が画面上へ抜けるまで移動させます。前半・後半とも通常の文章表示では静止した全文を読めます。
 
+SKILL・STRENGTHのカード本文には[Gen Interface JP](https://github.com/yamatoiizuka/gen-interface-jp)を使用します。npmパッケージのバージョンを`0.8.0`に固定し、現在の本文の太さに合わせて`700.css`のみ読み込んでいます。WOFF2はサイト内から配信し、ブラウザーが必要な文字のサブセットを読み込みます。ライセンスは[OFL.txt](./public/fonts/gen-interface-jp/OFL.txt)に同梱しています。カードタイトルは従来のフォントを使います。
+
 ## 画面と文章のサイズを測る処理
 
 `measure()`は、初期化時、画面サイズ変更時、フォントの準備完了時、演出モードに戻る際に実行します。実際に表示される文章の高さを測るため、本文の長さを変えても移動距離を調整できます。
@@ -173,7 +175,7 @@ range = scrollLength;
 
 `cinema-stage`は`position: fixed`で画面に固定されています。背後の長い`scroll-journey`がスクロール距離を作り、固定された画面内の文字を進行度に応じて動かす構成です。
 
-画面サイズ変更時には、変更前の進行度を保存し、新しい`range`に対して同じ割合の位置へ戻します。Lenisにも`resize()`を呼び、スクロール可能な距離を再計算させます。`document.fonts.ready`後にも計測し直すことで、フォント確定後の寸法を反映します。
+画面サイズ変更時には、変更前の進行度を保存し、新しい`range`に対して同じ割合の位置へ戻します。Lenisにも`resize()`を呼び、スクロール可能な距離を再計算させます。`document.fonts.ready`後と`loadingdone`イベント時にも計測し直すことで、途中でWebフォントが読み込まれた場合も確定後の寸法を反映します。
 
 ### タイトルを画面いっぱいに合わせる
 
