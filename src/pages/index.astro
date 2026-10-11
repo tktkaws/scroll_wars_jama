@@ -2,7 +2,6 @@
 import OpeningCrawl from '../components/OpeningCrawl.astro';
 import Starfield from '../components/Starfield.astro';
 import { story } from '../data/story';
-import starJediFont from '../assets/fonts/star-jedi/starjedi/Starjedi.ttf?url';
 import 'lenis/dist/lenis.css';
 import '../styles/global.css';
 ---
@@ -15,7 +14,6 @@ import '../styles/global.css';
     <meta name="theme-color" content="#000000" />
     <meta name="description" content="スクロールで旅する、遠い銀河の物語。タイトルの向こうに、あなたの冒険が待っている。" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="preload" href={starJediFont} as="font" type="font/ttf" crossorigin />
     <title>{story.title.join(' ')} — A journey through the stars</title>
   </head>
   <body>

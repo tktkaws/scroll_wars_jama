@@ -12,12 +12,12 @@ const { reading = false } = Astro.props;
 >
   <!-- Each CreditCard is one screen. Edit its HTML, reorder it, or add another. -->
   <CreditCard label="肩書き" reading={reading}>
-    <p class="intro-japanese">With respect to</p>
-    <p class="intro-japanese">GEORGE LUCAS</p>
+    <p class="intro-japanese credit-role">With respect to</p>
+    <p class="intro-japanese credit-name">GEORGE LUCAS</p>
   </CreditCard>
 
   <CreditCard label="名前" reading={reading}>
-    <p class="intro-japanese">Developed by</p>
-    <p class="intro-japanese">TAKAYUKI TAKAHASHI</p>
+    <p class="intro-japanese credit-role">Developed by</p>
+    <p class="intro-japanese credit-name">TAKAYUKI TAKAHASHI</p>
   </CreditCard>
 </section>

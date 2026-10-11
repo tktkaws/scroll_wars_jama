@@ -5,6 +5,7 @@ import EndCredits from './EndCredits.astro';
 import RollingCredits from './RollingCredits.astro';
 interface Props { story: OpeningStory }
 const { story } = Astro.props;
+const introLines = story.prelude.replace(' ', '　').replace('銀河系', '\n銀河系').split('\n');
 ---
 
 <main id="opening">
@@ -15,7 +16,9 @@ const { story } = Astro.props;
       </section>
       <section class="intro-scene" data-intro-scene inert>
         <div class="intro-copy">
-          <p class="intro-japanese">{story.prelude}</p>
+          <p class="intro-japanese">
+            {introLines.map((line, index) => <>{index > 0 && <br />}{line}</>)}
+          </p>
         </div>
       </section>
 

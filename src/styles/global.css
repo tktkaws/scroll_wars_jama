@@ -1,11 +1,3 @@
-@font-face {
-  font-family: 'Star Jedi';
-  src: url('../assets/fonts/star-jedi/starjedi/Starjedi.ttf') format('truetype');
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-}
-
 :root {
   color-scheme: dark;
   --space: #000;
@@ -71,21 +63,22 @@ button { border: 0; background: none; }
 .is-enhanced[data-mode='cinema'] .reader { display: none; }
 .cinema-stage { position: fixed; inset: 0; overflow: hidden; }
 .production-scene { position: absolute; inset: 0; display: grid; place-items: center; padding: 36px 5vw; background: var(--space); }
-.production-credit { display: flex; flex-direction: column; align-items: center; gap: 18px; color: #65bd7b; text-align: center; font-family: Georgia, 'Times New Roman', serif; text-shadow: 0 0 18px rgb(101 189 123 / 25%); }
-.production-credit-a { font-size: clamp(20px, 3vw, 36px); }
-.production-credit-company { font-size: clamp(22px, 5vw, 70px); font-weight: 700; letter-spacing: 0.035em; line-height: 1.15; }
-.production-credit-caption { font-size: clamp(20px, 3vw, 36px); letter-spacing: 0.04em; }
-.reader .production-credit { margin-bottom: 70px; }
-.reader .production-credit-company { font-size: clamp(22px, 4vw, 40px); }
+.production-credit { display: flex; flex-direction: column; align-items: center; gap: 0.4em; color: #65bd7b; text-align: center; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: clamp(26px, 7.2vw, 150px); font-weight: 700; line-height: 1.05; text-shadow: 0 0 18px rgb(101 189 123 / 25%); }
+.production-credit-a { font-size: 0.67em; }
+.production-credit-company { font-size: 1em; letter-spacing: 0; }
+.production-credit-caption { font-size: 0.67em; letter-spacing: 0; }
+.reader .production-credit { margin-bottom: 70px; font-size: clamp(26px, 4vw, 40px); }
 .intro-scene { position: absolute; inset: 0; display: grid; place-items: center; padding: 36px 5vw; }
 .intro-scene { opacity: 0; visibility: hidden; }
 .intro-copy { width: 100%; color: var(--intro-blue); text-align: center; }
 .intro-japanese { font-size: clamp(22px, 3.2vw, 46px); line-height: 1.8; letter-spacing: 0.12em; font-weight: 500; margin: 0; text-wrap: balance; }
+.intro-scene .intro-copy { width: max-content; max-width: 100%; text-align: left; }
+.intro-scene .intro-japanese { font-family: 'Hiragino Kaku Gothic ProN', 'Yu Gothic', Meiryo, sans-serif; font-size: clamp(18px, min(5vw, 9vh), 110px); line-height: 1.4; letter-spacing: 0.03em; font-weight: 700; white-space: nowrap; text-wrap: nowrap; }
 .title-scene { position: absolute; inset: 0; opacity: 0; visibility: hidden; }
 .eyebrow { color: var(--gold); font-size: 10px; letter-spacing: 0.3em; font-weight: 500; }
 .title-projection { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; perspective: 700px; perspective-origin: center; }
 .title-projection > .opening-title { flex-shrink: 0; }
-.opening-title { width: max-content; font-family: 'Star Jedi', Impact, 'Arial Black', sans-serif; font-size: min(29vw, 48vh); font-weight: 400; text-transform: lowercase; line-height: 0.83; letter-spacing: 0; text-align: center; margin: 0; color: transparent; -webkit-text-stroke: clamp(9px, 1.5vw, 24px) var(--gold); transform-origin: center; will-change: transform; }
+.opening-title { width: max-content; font-family: Impact, 'Arial Black', sans-serif; font-size: min(29vw, 48vh); font-weight: 900; line-height: 0.83; letter-spacing: 0; text-align: center; margin: 0; color: transparent; -webkit-text-stroke: clamp(9px, 1.5vw, 24px) var(--gold); transform-origin: center; will-change: transform; }
 .opening-title span { display: block; }
 .opening-title span + span { margin-top: 0.08em; }
 
@@ -105,9 +98,10 @@ button { border: 0; background: none; }
 
 /* End credits share the opening's blue, centered typography. */
 .credits-scene { position: absolute; inset: 0; pointer-events: none; }
-.credit-card { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; padding: 36px 7vw; opacity: 0; visibility: hidden; }
-.credit-card .intro-japanese { max-width: 1100px; text-shadow: 0 2px 18px var(--space); }
-.credit-card:last-child .intro-japanese { font-size: clamp(20px, 2.8vw, 40px); letter-spacing: 0.06em; }
+.credit-card, .reader-credit { font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: clamp(16px, 2.2vw, 44px); }
+.credit-card { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.25em; padding: 36px 7vw; opacity: 0; visibility: hidden; }
+.credit-card .intro-japanese, .reader-credit .intro-japanese { max-width: 100%; font-size: 1em; font-weight: 700; line-height: 1.2; letter-spacing: 0; text-shadow: 0 2px 18px var(--space); }
+.credit-card .credit-name, .reader-credit .credit-name { font-size: 1.2em; }
 .rolling-credits-scene { position: absolute; inset: 0; overflow: hidden; visibility: hidden; mask-image: linear-gradient(to bottom, transparent, #000 12%, #000 85%, transparent); }
 .rolling-credits-scene .rolling-credits-text { position: absolute; top: 0; left: 50%; width: min(86%, 800px); transform: translate(-50%, 100vh); will-change: transform; }
 .rolling-credits-text { text-align: center; color: var(--intro-blue); font-size: clamp(18px, 2.2vw, 30px); line-height: 1.9; letter-spacing: 0.06em; text-wrap: balance; }
@@ -119,8 +113,8 @@ button { border: 0; background: none; }
 .reader-rolling-credits .rolling-credit-group { margin-top: 40px; }
 .reader-rolling-credits .rolling-credits-text h3 { color: #b5bdc7; font-size: 12px; }
 .reader-profile { margin-top: 70px; padding-top: 24px; border-top: 1px solid #323138; }
-.reader-credit { margin: 32px 0; }
-.reader-credit .intro-japanese { font-size: inherit; line-height: inherit; letter-spacing: 0.06em; text-align: left; }
+.reader-credit { display: flex; flex-direction: column; align-items: flex-start; gap: 0.25em; margin: 32px 0; }
+.reader-credit .intro-japanese { margin: 0; text-align: left; }
 .reader-profile h3 { color: var(--intro-blue); font-size: 17px; font-weight: 500; }
 .reader-profile ul { display: flex; flex-wrap: wrap; gap: 8px 24px; padding-left: 24px; }
 
@@ -141,11 +135,11 @@ button { border: 0; background: none; }
 .progress-unit { font-size: 9px; color: #ab9d78; margin-left: -6px; }
 
 .reader { max-width: 680px; margin: 0 auto; padding: 90px 30px 110px; line-height: 2.25; font-size: 17px; color: #c4c0bb; }
-.reader h1 { color: var(--gold); font-family: 'Star Jedi', Impact, 'Arial Black', sans-serif; font-size: clamp(40px, 9vw, 78px); font-weight: 400; text-transform: lowercase; letter-spacing: 0; line-height: 1.1; margin: 20px 0 30px; }
-.reader h2 { color: var(--gold); font-size: 27px; letter-spacing: 0.1em; font-weight: 600; margin: 65px 0 28px; }
+.reader h1 { color: var(--gold); font-family: Impact, 'Arial Black', sans-serif; font-size: clamp(40px, 9vw, 78px); letter-spacing: 0; line-height: 1.1; margin: 20px 0 30px; }
+.reader > h2 { color: var(--gold); font-size: 1.28em; letter-spacing: 0.1em; font-weight: 600; margin: 65px 0 28px; }
 .reader p { margin: 0 0 30px; }
-.reader .eyebrow { margin-bottom: 14px; }
-.reader-prelude { color: var(--intro-blue); font-size: 17px; letter-spacing: 0.12em; }
+.reader .eyebrow { margin-bottom: 14px; font-size: 0.66em; }
+.reader-prelude { color: var(--intro-blue); font-size: clamp(18px, 5vw, 36px); line-height: 1.4; letter-spacing: 0.03em; font-weight: 700; }
 
 @media (max-width: 800px) {
   .chapter-navigation { right: 16px; }

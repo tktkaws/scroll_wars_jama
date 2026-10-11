@@ -177,7 +177,7 @@ range = scrollLength;
 
 ### タイトルを画面いっぱいに合わせる
 
-タイトルは[Star Jedi](https://www.dafont.com/star-jedi.font)のローカルファイル[Starjedi.ttf](./src/assets/fonts/star-jedi/starjedi/Starjedi.ttf)を使用します。フォント一式と付属ガイドは`src/assets/fonts/star-jedi/`に保存しています。`global.css`の`@font-face`で読み込み、ページの`<head>`で先読みします。標準の文字形は小文字に割り当てられているため、タイトルには`text-transform: lowercase`を指定しています。見た目は大文字です。演出側と通常の文章表示のタイトルに適用し、黄色の輪郭はCSSで描きます。
+タイトルのフォントは`Impact, 'Arial Black', sans-serif`です。演出側と通常の文章表示のタイトルに適用し、黄色の輪郭はCSSで描きます。Star Jediのフォント一式と付属ガイドは`src/assets/fonts/star-jedi/`に保存していますが、現在は読み込んでいません。
 
 タイトルはいったん`font-size: 100px`にして高さを測り、画面高さの140%に合わせます。中央に配置し、最初は上下が画面から見切れる大きさにします。フォントの読み込みが完了すると`document.fonts.ready`で寸法を測り直します。
 
