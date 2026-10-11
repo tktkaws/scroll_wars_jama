@@ -104,14 +104,27 @@ button { border: 0; background: none; }
 .credit-card .credit-name, .reader-credit .credit-name { font-size: 1.2em; }
 .rolling-credits-scene { position: absolute; inset: 0; overflow: hidden; visibility: hidden; mask-image: linear-gradient(to bottom, transparent, #000 12%, #000 85%, transparent); }
 .rolling-credits-scene .rolling-credits-text { position: absolute; top: 0; left: 50%; width: min(86%, 800px); transform: translate(-50%, 100vh); will-change: transform; }
-.rolling-credits-text { text-align: center; color: var(--intro-blue); font-size: clamp(18px, 2.2vw, 30px); line-height: 1.9; letter-spacing: 0.06em; text-wrap: balance; }
-.rolling-credit-group + .rolling-credit-group { margin-top: clamp(60px, 10vh, 110px); }
-.rolling-credits-text h3 { margin: 0 0 24px; color: #b5bdc7; font-size: 12px; font-weight: 500; letter-spacing: 0.25em; }
-.rolling-credits-text h2 { margin: 0 0 20px; color: var(--intro-blue); font-size: clamp(28px, 3.5vw, 46px); font-weight: 500; letter-spacing: 0.12em; }
+.rolling-credits-text { text-align: center; color: var(--intro-blue); font-family: 'DIN Condensed', 'Arial Narrow', Arial, 'Hiragino Kaku Gothic ProN', 'Yu Gothic', Meiryo, sans-serif; font-size: clamp(18px, 2.2vw, 30px); font-weight: 700; line-height: 1.9; letter-spacing: 0.04em; text-wrap: balance; }
+.rolling-credit-group + .rolling-credit-group { margin-top: clamp(180px, 30vh, 330px); }
+.rolling-credits-text > .rolling-credit-group > h3 { margin: 0 0 24px; color: var(--intro-blue); font-size: 1.2em; font-weight: 700; letter-spacing: 0.04em; }
+.rolling-credits-text h2 { margin: 0 0 20px; color: var(--intro-blue); font-size: clamp(28px, 3.5vw, 46px); font-weight: 700; letter-spacing: 0.04em; }
 .rolling-credits-text p { margin: 8px 0; }
-.reader-rolling-credits .rolling-credits-text { font-size: inherit; }
+.rolling-profile-details { width: 100%; max-width: 100%; margin: 0 auto; text-align: left; }
+.rolling-profile-details > div { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: baseline; column-gap: 16px; }
+.rolling-profile-details > div + div { margin-top: 14px; }
+.rolling-profile-details dt, .skill-card h4 { font-size: 0.63em; }
+.rolling-profile-details dt { line-height: 1.6; text-align: right; }
+.rolling-profile-details dd { margin: 0; font-size: 0.8em; }
+.skill-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.strength-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.skill-card { min-width: 0; display: flex; flex-direction: column; gap: 12px; padding: 20px 18px; border-radius: 8px; background: rgb(101 214 238 / 4%); line-height: 1.85; letter-spacing: 0.02em; text-align: left; text-wrap: pretty; overflow-wrap: anywhere; }
+.skill-card h4 { margin: 0; line-height: 1.4; font-weight: 700; }
+.rolling-credits-text .skill-card p, .rolling-credits-text .skill-card ul { margin: 0; font-size: clamp(14px, 1.2vw, 16px); }
+.rolling-credits-text .skill-card ul { display: block; padding-left: 1.2em; }
+.skill-card li + li { margin-top: 6px; }
+.skill-card a { text-decoration: underline; text-underline-offset: 3px; }
+.skill-card a:hover { color: var(--gold); }
 .reader-rolling-credits .rolling-credit-group { margin-top: 40px; }
-.reader-rolling-credits .rolling-credits-text h3 { color: #b5bdc7; font-size: 12px; }
 .reader-profile { margin-top: 70px; padding-top: 24px; border-top: 1px solid #323138; }
 .reader-credit { display: flex; flex-direction: column; align-items: flex-start; gap: 0.25em; margin: 32px 0; }
 .reader-credit .intro-japanese { margin: 0; text-align: left; }
@@ -142,10 +155,12 @@ button { border: 0; background: none; }
 .reader-prelude { color: var(--intro-blue); font-size: clamp(18px, 5vw, 36px); line-height: 1.4; letter-spacing: 0.03em; font-weight: 700; }
 
 @media (max-width: 800px) {
+  .skill-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .chapter-navigation { right: 16px; }
   .journey-footer { left: 25px; right: 25px; bottom: 25px; }
 }
 @media (max-width: 500px) {
+  .skill-grid { grid-template-columns: minmax(0, 1fr); }
   .reader-toggle { font-size: 10px; gap: 7px; }
   .intro-japanese { letter-spacing: 0.08em; }
   .crawl-text { line-height: 1.85; letter-spacing: 0.02em; }

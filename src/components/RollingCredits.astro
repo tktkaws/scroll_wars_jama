@@ -14,26 +14,112 @@ const { reading = false } = Astro.props;
     <!-- Edit this HTML freely. All groups scroll upward together in cinema mode. -->
     <div class="rolling-credit-group">
       <h3>PROFILE</h3>
-      <h2>高橋孝幸</h2>
-      <p>1986年生まれ</p>
-      <p>東京都在住</p>
-      <p>フロントエンドエンジニア</p>
+      <dl class="rolling-profile-details">
+        <div>
+          <dt>氏名</dt>
+          <dd>高橋孝幸</dd>
+        </div>
+        <div>
+          <dt>生年月日</dt>
+          <dd>1986年生まれ</dd>
+        </div>
+        <div>
+          <dt>住所</dt>
+          <dd>東京都在住</dd>
+        </div>
+        <div>
+          <dt>職業</dt>
+          <dd>フロントエンドエンジニア</dd>
+        </div>
+      </dl>
     </div>
 
     <div class="rolling-credit-group">
       <h3>SKILL</h3>
-      <p>HTML / CSS / JavaScript</p>
-      <p>TypeScript / React / Astro</p>
+      <div class="skill-grid">
+        <article class="skill-card">
+          <h4>HTML</h4>
+          <p>
+            セマンティックにマークアップすることを心がけています。<br />
+            また、なるべくWeb標準を意識してUIを作成します。<br />
+            Nu Html Checkerやmarkuplintでのチェックを都度はさみます。
+          </p>
+        </article>
+
+        <article class="skill-card">
+          <h4>CSS</h4>
+          <p>
+            BEMやFLOCCSなど有名なCSS設計について基本的な理解をしています。<br />
+            既存のルールを解読しそれに沿いながら記述することが可能です。<br />
+            TailwindCSSを個人開発で利用しているため対応可能です。
+          </p>
+        </article>
+
+        <article class="skill-card">
+          <h4>JavaScript</h4>
+          <ul>
+            <li>アニメーション演出のためのVanilla JSを書く</li>
+            <li>既存のライブラリを導入し調整する</li>
+          </ul>
+          <p>
+            上記を主に業務で行っています。<br />
+            個人開発ではTypeScript/React/Next.jsを学習しながら書いています
+          </p>
+        </article>
+
+        <article class="skill-card">
+          <h4>WordPress</h4>
+          <p>
+            テーマ開発が可能です。<br />
+            ブロックエディタによるFSE（Full Site Editing）の開発経験はありません。<br />
+            セキュリティを考慮して実装します。
+          </p>
+        </article>
+
+        <article class="skill-card">
+          <h4>Git</h4>
+          <p>基本的な操作及びgithubflowを理解しています。</p>
+        </article>
+
+        <article class="skill-card">
+          <h4>Figma</h4>
+          <p>
+            基本的にFigmaのカンプからコーディングを進めます。<br />
+            XDやPhotoshopのカンプでも対応できます。<br />
+            MCPを使用したAIによるUIの再現を試すなど、Figmaの効率的な利用方法を試しています。
+          </p>
+        </article>
+      </div>
     </div>
 
     <div class="rolling-credit-group">
-      <h3>FUTURE</h3>
-      <p>Webアクセシビリティに興味あり</p>
-    </div>
+      <h3>STRENGTH</h3>
+      <div class="skill-grid strength-grid">
+        <article class="skill-card">
+          <h4>Webアクセシビリティ</h4>
+          <p>
+            入社半年ほどでアクセシビリティ対応の案件にアサインされました。<br />
+            JIS X 8341-3:2016を満たしているか他社が試験した結果を受け、サイトの改修を行いました。<br />
+            下記のとおり、自身でアクセシビリティの試験を行えるようになりました。
+          </p>
+        </article>
 
-    <div class="rolling-credit-group">
-      <h3>FAB</h3>
-      <p>お笑い / HIPHOP / カレー</p>
+        <article class="skill-card">
+          <h4>学習意欲の高さ</h4>
+          <p>
+            Web制作会社への転職前からWebアクセシビリティに関心を持っていました。<br />
+            イベントに参加し、関連書籍を読み、学習を続けています。<br />
+            アクセシビリティに関する資格も取得しました。<br />
+            <strong>DHS Trusted Tester Certificationを取得</strong><br />
+            <a href="https://front-dispatch-2026.vercel.app/blog/ch91jpvx2/" target="_blank" rel="noopener noreferrer">https://front-dispatch-2026.vercel.app/blog/ch91jpvx2/</a>
+          </p>
+          <p>
+            また、毎日1本AIが書いた記事を読み学習する習慣を続けています。<br />
+            <strong>Knowledge Base</strong><br />
+            <a href="https://github.com/tktkaws/Knowledge_Base" target="_blank" rel="noopener noreferrer">https://github.com/tktkaws/Knowledge_Base</a>
+          </p>
+        </article>
+      </div>
     </div>
   </div>
 </section>
