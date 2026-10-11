@@ -35,7 +35,7 @@ button { border: 0; background: none; }
 #credits-starfield { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; }
 .has-credit-webgl #credits-starfield { opacity: 0.94; }
 .has-credit-webgl .credits-starfield-fallback { opacity: 0; }
-[data-mode='reader'] .credits-galaxy { display: none; }
+[data-mode='reader'] .credits-galaxy, html:not(.is-enhanced) .credits-galaxy { opacity: 1; --credit-stars-opacity: 1; --iris-outer-blur: 0px; }
 .starfield-fallback, #starfield { position: absolute; inset: 0; width: 100%; height: 100%; }
 .starfield-fallback { opacity: 0.9; }
 .starfield-fallback { transform: translateY(calc(var(--camera-pan, 0) * -20vh)) scale(1.5); }
@@ -54,6 +54,7 @@ button { border: 0; background: none; }
 .reader-toggle { display: none; align-items: center; gap: 10px; font-size: 11px; letter-spacing: 0.06em; color: #b6b5b8; padding: 8px 0; }
 .is-enhanced .reader-toggle { display: flex; }
 .reader-toggle:hover { color: var(--gold); }
+[data-mode='reader'] .reader-toggle { color: #fff; }
 
 .scroll-journey, .chapter-navigation, .journey-footer { display: none; }
 .is-enhanced[data-mode='cinema'] .scroll-journey,
@@ -67,7 +68,7 @@ button { border: 0; background: none; }
 .production-credit-a { font-size: 0.67em; }
 .production-credit-company { font-size: 1em; letter-spacing: 0; }
 .production-credit-caption { font-size: 0.67em; letter-spacing: 0; }
-.reader .production-credit { margin-bottom: 70px; font-size: clamp(26px, 4vw, 40px); }
+.reader .production-credit { margin-bottom: 70px; font-size: clamp(26px, 4vw, 40px); color: inherit; text-shadow: none; }
 .intro-scene { position: absolute; inset: 0; display: grid; place-items: center; padding: 36px 5vw; }
 .intro-scene { opacity: 0; visibility: hidden; }
 .intro-copy { width: 100%; color: var(--intro-blue); text-align: center; }
@@ -125,6 +126,7 @@ button { border: 0; background: none; }
 .skill-card a { text-decoration: underline; text-underline-offset: 3px; }
 .skill-card a:hover { color: var(--gold); }
 .reader-rolling-credits .rolling-credit-group { margin-top: 40px; }
+.reader-rolling-credits .skill-grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); }
 .reader-profile { margin-top: 70px; padding-top: 24px; border-top: 1px solid #323138; }
 .reader-credit { display: flex; flex-direction: column; align-items: flex-start; gap: 0.25em; margin: 32px 0; }
 .reader-credit .intro-japanese { margin: 0; text-align: left; }
@@ -147,7 +149,7 @@ button { border: 0; background: none; }
 .progress-number { font-size: 13px; color: inherit; font-variant-numeric: tabular-nums; letter-spacing: 0.03em; }
 .progress-unit { font-size: 9px; color: #ab9d78; margin-left: -6px; }
 
-.reader { max-width: 680px; margin: 0 auto; padding: 90px 30px 110px; line-height: 2.25; font-size: 17px; color: #c4c0bb; }
+.reader { --gold: #fff; --intro-blue: #fff; max-width: 680px; margin: 0 auto; padding: 90px 30px 110px; line-height: 2.25; font-size: 17px; color: #fff; }
 .reader h1 { color: var(--gold); font-family: Impact, 'Arial Black', sans-serif; font-size: clamp(40px, 9vw, 78px); letter-spacing: 0; line-height: 1.1; margin: 20px 0 30px; }
 .reader > h2 { color: var(--gold); font-size: 1.28em; letter-spacing: 0.1em; font-weight: 600; margin: 65px 0 28px; }
 .reader p { margin: 0 0 30px; }
