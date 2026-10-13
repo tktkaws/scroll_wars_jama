@@ -46,9 +46,13 @@ src/
 │   └── index.astro           ページ全体、メタ情報、CSSの読み込み
 ├── components/
 │   ├── OpeningCrawl.astro    各場面、本文表示、操作ボタンのHTML
+│   ├── OpeningIntro.astro    導入文（<br> で改行）
+│   ├── OpeningTitle.astro    タイトル（<span> ごとに1行）
+│   ├── OpeningStory.astro    章番号、章タイトル、本文（<p> で段落）
+│   ├── PageTitle.astro       タイトルコンポーネントからタブ名を生成
 │   └── Starfield.astro       SVGの星空、WebGL用canvas、周辺の暗がり
 ├── data/
-│   └── story.ts              文章と場面のスクロール配分
+│   └── story.ts              場面のスクロール配分
 ├── scripts/
 │   ├── opening.ts            スクロール、文字の演出、表示モード
 │   └── starfield.ts          three.jsによる星空描画
@@ -61,7 +65,7 @@ astro.config.mjs              開発サーバーの依存関係変換設定
 
 ## AstroによるHTML生成とブラウザーでの初期化
 
-[index.astro](./src/pages/index.astro)は`story`を読み込み、`Starfield`と`OpeningCrawl`を配置します。Lenisの標準CSSを先に読み込み、その後に`global.css`を読み込みます。
+[index.astro](./src/pages/index.astro)は`Starfield`と`OpeningCrawl`を配置し、`PageTitle`に渡した`OpeningTitle`からタブ名を生成します。`OpeningCrawl`は`OpeningIntro`、`OpeningTitle`、`OpeningStory`を演出、通常表示、読み上げ用の本文で共用します。LenisとフォントのCSSを先に読み込み、その後に`global.css`を読み込みます。
 
 `.astro`の先頭にある`---`で囲まれた部分はHTML生成側の処理です。本番の静的ビルドでは、ここで文章やSVGの星がHTMLになります。ブラウザーでは、各コンポーネント内の`<script>`から次の初期化関数を呼びます。
 
@@ -188,7 +192,7 @@ const titleSize = 100 * height * 1.4 / Math.max(1, title.offsetHeight);
 title.style.fontSize = `${titleSize}px`;
 ```
 
-タイトルの横幅はフォントと文字数に応じて決まります。`story.title`の配列要素は1要素につき1行です。
+タイトルの横幅はフォントと文字数に応じて決まります。`src/components/OpeningTitle.astro`の`<span>`は1要素につき演出では1行です。
 
 CSSの`.title-projection`に`perspective: 700px`を指定し、`update()`でタイトルを`translateZ(0px)`から`translateZ(-2800px)`まで動かします。遠近法で徐々に小さくなることと透明度の変化を組み合わせ、奥へ消える演出を作ります。
 
@@ -420,11 +424,13 @@ await Promise.all(
 
 ### 文章と場面の長さ
 
-- [story.ts](./src/data/story.ts)の`story`: タイトル、導入文の日本語・英語、章番号、章タイトル、段落、エンディング。
-- 同ファイルの`sequence`: 各場面の開始・終了位置と最低スクロール距離。
+- [OpeningIntro.astro](./src/components/OpeningIntro.astro): INTROの導入文。`<br />`で改行します。
+- [OpeningTitle.astro](./src/components/OpeningTitle.astro): TITLEの文字。`<span>`ひとつにつき演出では1行になり、ブラウザーのタブ名も更新されます。
+- [OpeningStory.astro](./src/components/OpeningStory.astro): STORYの章番号、`<h2>`の章タイトル、`<p>`の段落。`<p>`を追加して文章を増やせます。
+- [story.ts](./src/data/story.ts)の`sequence`: 各場面の開始・終了位置と最低スクロール距離。
 - [opening.ts](./src/scripts/opening.ts)の`scenePositions`: ボタンで移動する位置。
 
-場面の数値は開始から終了へ増える順序を保ち、`portion()`に渡す開始値と終了値を同じにしないでください。文章を増やすとスクロール距離は自動で伸びますが、場面ごとの割合は変わりません。
+3つのAstroコンポーネントを保存すると、演出と「本文を読む」の両方に反映されます。`<em>`や`<strong>`なども使用できます。場面の数値は開始から終了へ増える順序を保ち、`portion()`に渡す開始値と終了値を同じにしないでください。文章を増やすとスクロール距離は自動で伸びますが、場面ごとの割合は変わりません。
 
 ### 色、文字、遠近感
 
