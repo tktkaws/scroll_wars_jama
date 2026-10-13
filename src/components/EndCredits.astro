@@ -10,14 +10,20 @@ const { reading = false } = Astro.props;
   class:list={reading ? ["reader-profile"] : ["credits-scene"]}
   aria-label="プロフィールのエンドクレジット"
 >
-  <!-- Each CreditCard is one screen. Edit its HTML, reorder it, or add another. -->
-  <CreditCard label="肩書き" reading={reading}>
-    <p class="intro-japanese credit-role">With respect to</p>
-    <p class="intro-japanese credit-name">GEORGE LUCAS</p>
+  <CreditCard label="オマージュ" reading={reading}>
+    <p class="intro-japanese credit-role">Inspired by</p>
+    <p class="intro-japanese credit-name">
+      STAR WARS: EPISODE IV
+    </p>
   </CreditCard>
 
   <CreditCard label="名前" reading={reading}>
     <p class="intro-japanese credit-role">Developed by</p>
     <p class="intro-japanese credit-name">TAKAYUKI TAKAHASHI</p>
+  </CreditCard>
+
+  <CreditCard label="使用技術" reading={reading}>
+    <p class="intro-japanese credit-role">Built with</p>
+    <p class="intro-japanese credit-name">Astro / three.js / Lenis</p>
   </CreditCard>
 </section>
