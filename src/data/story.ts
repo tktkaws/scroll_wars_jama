@@ -1,20 +1,4 @@
-/** Edit the opening here. The crawl distance adapts to the length of the text. */
-export const story = {
-  title: ['SCROLL', 'WARS'],
-  episode: 'EPISODE 001',
-  chapter: 'まだ見ぬ世界へ',
-  prelude: '遠い昔 はるかかなたの銀河系で…',
-  paragraphs: [
-    '無数の星が眠る銀河の片隅。忘れ去られた小さな惑星から、ひとつの信号が宇宙へと放たれた。',
-    'それは、まだ誰も見たことのない世界への招待状。長い沈黙を破り、古い星図に新たな航路が浮かび上がる。',
-    '光を追う者たちは、故郷を離れ、暗闇の向こうへ船を進めた。手にしたのは、わずかな希望と、終わりのない好奇心だけ。',
-    '星々のあいだには、数えきれない物語がある。出会いも、別れも、まだ名前のない発見も。そのすべてが、旅人の到着を待っていた。',
-    'そして今、新しい冒険が始まる。次の一歩が、物語を動かす。遥か彼方の未来へ向かって…。',
-  ],
-  ending: 'その先に、あなたの物語を。',
-};
-
-export type OpeningStory = typeof story;
+// INTRO・TITLE・STORYの文章は src/components/OpeningIntro.astro・OpeningTitle.astro・OpeningStory.astro で編集してください。
 
 // TITLEとSTORYに必要なスクロール距離の倍率。
 const titleStoryScrollScale = 0.5;

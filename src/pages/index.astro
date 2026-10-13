@@ -1,10 +1,12 @@
 ---
 import OpeningCrawl from '../components/OpeningCrawl.astro';
 import Starfield from '../components/Starfield.astro';
-import { story } from '../data/story';
+import OpeningTitle from '../components/OpeningTitle.astro';
+import PageTitle from '../components/PageTitle.astro';
 import 'lenis/dist/lenis.css';
 import 'gen-interface-jp/700.css';
 import '../styles/global.css';
+
 ---
 
 <!doctype html>
@@ -15,10 +17,10 @@ import '../styles/global.css';
     <meta name="theme-color" content="#000000" />
     <meta name="description" content="スクロールで旅する、遠い銀河の物語。タイトルの向こうに、あなたの冒険が待っている。" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <title>{story.title.join(' ')} — A journey through the stars</title>
+    <PageTitle><OpeningTitle /></PageTitle>
   </head>
   <body>
     <Starfield />
-    <OpeningCrawl story={story} />
+    <OpeningCrawl />
   </body>
 </html>

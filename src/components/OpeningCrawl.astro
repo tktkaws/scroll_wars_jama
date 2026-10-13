@@ -1,11 +1,10 @@
 ---
-import type { OpeningStory } from '../data/story';
+import OpeningIntro from './OpeningIntro.astro';
+import OpeningTitle from './OpeningTitle.astro';
+import OpeningStory from './OpeningStory.astro';
 import ProductionCredit from './ProductionCredit.astro';
 import EndCredits from './EndCredits.astro';
 import RollingCredits from './RollingCredits.astro';
-interface Props { story: OpeningStory }
-const { story } = Astro.props;
-const introLines = story.prelude.replace(' ', '　').replace('銀河系', '\n銀河系').split('\n');
 ---
 
 <main id="opening">
@@ -16,27 +15,19 @@ const introLines = story.prelude.replace(' ', '　').replace('銀河系', '\n銀
       </section>
       <section class="intro-scene" data-intro-scene inert>
         <div class="intro-copy">
-          <p class="intro-japanese">
-            {introLines.map((line, index) => <>{index > 0 && <br />}{line}</>)}
-          </p>
+          <p class="intro-japanese"><OpeningIntro /></p>
         </div>
       </section>
 
       <section class="title-scene" data-title-scene inert>
         <div class="title-projection">
-          <h1 class="opening-title" data-title>
-            {story.title.map((word) => <span>{word}</span>)}
-          </h1>
+          <h1 class="opening-title" data-title><OpeningTitle /></h1>
         </div>
       </section>
 
       <div class="crawl-viewport" data-crawl-viewport aria-hidden="true">
         <div class="crawl-plane">
-          <article class="crawl-text" data-crawl>
-            <p class="crawl-episode">{story.episode}</p>
-            <h2>{story.chapter}</h2>
-            {story.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
-          </article>
+          <article class="crawl-text" data-crawl><OpeningStory /></article>
         </div>
       </div>
 
@@ -52,19 +43,14 @@ const introLines = story.prelude.replace(' ', '　').replace('銀河系', '\n銀
         </nav>
       </section>
     </div>
-    <article class="sr-only" aria-label="物語の本文">
-      <h2>{story.chapter}</h2>
-      {story.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
-    </article>
+    <article class="sr-only" aria-label="物語の本文"><OpeningStory /></article>
   </div>
 
   <article class="reader" id="reader" tabindex="-1">
     <ProductionCredit />
-    <p class="reader-prelude">{story.prelude}</p>
-    <h1>{story.title.join(' ')}</h1>
-    <p class="eyebrow">{story.episode} / THE OPENING</p>
-    <h2>{story.chapter}</h2>
-    {story.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+    <p class="reader-prelude"><OpeningIntro /></p>
+    <h1><OpeningTitle /></h1>
+    <OpeningStory />
     <EndCredits reading />
     <RollingCredits reading />
   </article>

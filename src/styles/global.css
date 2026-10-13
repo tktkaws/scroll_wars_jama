@@ -153,7 +153,7 @@ button { border: 0; background: none; }
 .reader h1 { color: var(--gold); font-family: Impact, 'Arial Black', sans-serif; font-size: clamp(40px, 9vw, 78px); letter-spacing: 0; line-height: 1.1; margin: 20px 0 30px; }
 .reader > h2 { color: var(--gold); font-size: 1.28em; letter-spacing: 0.1em; font-weight: 600; margin: 65px 0 28px; }
 .reader p { margin: 0 0 30px; }
-.reader .eyebrow { margin-bottom: 14px; font-size: 0.66em; }
+.reader .eyebrow, .reader .crawl-episode { color: var(--gold); margin-bottom: 14px; font-size: 0.66em; letter-spacing: 0.3em; font-weight: 500; }
 .reader-prelude { color: var(--intro-blue); font-size: clamp(18px, 5vw, 36px); line-height: 1.4; letter-spacing: 0.03em; font-weight: 700; }
 
 @media (max-width: 800px) {

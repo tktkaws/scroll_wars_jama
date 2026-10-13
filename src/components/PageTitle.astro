@@ -1,0 +1,8 @@
+---
+// Render the title component so edits also update the browser tab.
+const titleHtml = await Astro.slots.render('default');
+const pageTitle = titleHtml.replace(/<!--[\s\S]*?-->/g, '')
+  .replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+---
+
+<title set:html={`${pageTitle} — A journey through the stars`} />
